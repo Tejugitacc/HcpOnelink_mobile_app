@@ -2,8 +2,9 @@
 
 // Demo: dummy login that resolves for a known credential.
 // Replace with real API call (fetch/axios) when ready.
+// https://dsi-hcp-dev.appiancloud.com/suite/webapi/mobileuserlogin
 
-export async function apiLogin(email, password) {
+export async function loginToAppian(email, password) {
   // Simulate network delay
   await new Promise((r) => setTimeout(r, 700));
 
@@ -21,19 +22,27 @@ export async function apiLogin(email, password) {
 }
 
 //real api code
-// export async function apiLogin(email, password) {
-//     const resp = await fetch('https://your-real-api/login', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ email, password }),
-//     });
+// auth.js
+// export async function loginToAppian(username, password) {
+//   const url =
+//     'https://dsi-hcp-dev.appiancloud.com/suite/webapi/mobileuserlogin';
 
-//     if (!resp.ok) {
-//       const err = await resp.json();
-//       return { success: false, message: err.message || 'Login failed' };
+//   // Basic Auth header → base64(username:password)
+//   // const token = btoa(`${username}:${password}`);
+
+//   const response = await fetch(url, {
+//     method: 'POST', // or POST: depends on your API, Appian accepts both
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: 'Basic ' + btoa(username + ':' + password),
+//       Origin: 'http://localhost:8081'
 //     }
+//   });
 
-//     const json = await resp.json();
-//     // expect json.token
-//     return { success: true, token: json.token, user: json.user };
+//   if (response.status === 401) {
+//     return { success: false, message: 'Invalid username or password' };
 //   }
+
+//   const data = await response.json();
+//   return data;
+// }
