@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -6,12 +7,26 @@ import { fetchProfile } from '../src/api/profileApi';
 export default function Profile() {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
-  const username = localStorage.getItem("userToken");
-  const userId = localStorage.getItem("userId");
+  const [username, setUsername] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    getProfile();
+    loadData();
   }, []);
+
+  const loadData = async () => {
+    const storedUsername = await AsyncStorage.getItem("userToken");
+    const storedUserId = await AsyncStorage.getItem("userId");
+
+    setUsername(storedUsername);
+    setUserId(storedUserId);
+
+    if (storedUsername && storedUserId) {
+      getProfile(storedUsername, storedUserId);
+    } else {
+      console.log("❌ Missing username/userId in AsyncStorage.");
+    }
+  };
 
   const getProfile = async () => {
     try {

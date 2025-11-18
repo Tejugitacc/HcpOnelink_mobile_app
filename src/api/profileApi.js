@@ -1,15 +1,15 @@
 // app/src/api/auth.js
 import { backendURL } from '../constants/apiConstants.js';
 
-export async function fetchProfile(username, password,userId) {
-  const url = backendURL + '/:' + userId + '/profile';
+export async function fetchProfile(username,userId) {
+  const url = backendURL + '/api/cache/:' + userId + '/profile';
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ username})
   });
 
   if (response.status === 401) {
