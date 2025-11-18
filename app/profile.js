@@ -1,19 +1,23 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { fetchProfile } from '../src/api/profileApi';
 
 export default function Profile() {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
+  const username = localStorage.getItem("userToken");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    fetchProfile();
+    getProfile();
   }, []);
 
-  const fetchProfile = async () => {
+  const getProfile = async () => {
     try {
-      const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
+      const res = await fetchProfile(username,userId)
       const data = await res.json();
+      console.log("profile data",data)
       setProfile(data);
     } catch (err) {
       console.error("API Error:", err);

@@ -19,9 +19,10 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
         return;
       }
-
+      console.log("login repsonse",result)
       // Save user token locally (your choice)
       await AsyncStorage.setItem('userToken', username);
+      await AsyncStorage.setItem('userID', result.dsiID);
 
       setUserToken(username);
     } catch (error) {
