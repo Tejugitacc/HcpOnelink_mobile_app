@@ -2,22 +2,18 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function Profile() {
+export default function InvoiceExpense() {
   const router = useRouter();
-  const [profile, setProfile] = useState(null);
+  const [invoice, setInvoice] = useState(null);
 
   useEffect(() => {
-    fetchProfile();
+    loadInvoice();
   }, []);
 
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch("https://jsonplaceholder.typicode.com/users/1");
-      const data = await res.json();
-      setProfile(data);
-    } catch (err) {
-      console.error("API Error:", err);
-    }
+  const loadInvoice = async () => {
+    const res = await fetch("https://jsonplaceholder.typicode.com/todos/1");
+    const data = await res.json();
+    setInvoice(data);
   };
 
   return (
@@ -26,13 +22,13 @@ export default function Profile() {
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.title}>Invoice & Expense</Text>
 
-      {profile ? (
+      {invoice ? (
         <View style={styles.card}>
-          <Text style={styles.info}>Name: {profile.name}</Text>
-          <Text style={styles.info}>Email: {profile.email}</Text>
-          <Text style={styles.info}>Phone: {profile.phone}</Text>
+          <Text style={styles.info}>Invoice ID: {invoice.id}</Text>
+          <Text style={styles.info}>Title: {invoice.title}</Text>
+          <Text style={styles.info}>Status: {invoice.completed ? "Paid" : "Pending"}</Text>
         </View>
       ) : (
         <Text>Loading...</Text>
@@ -47,7 +43,7 @@ const styles = StyleSheet.create({
   backText: { fontSize: 18, color: "#2d6cdf" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
   card: {
-    backgroundColor: "#f0f4ff",
+    backgroundColor: "#eefaf2",
     padding: 20,
     borderRadius: 10
   },

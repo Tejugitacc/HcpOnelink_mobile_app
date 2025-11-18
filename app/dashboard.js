@@ -22,6 +22,29 @@ export default function Dashboard() {
         You are now logged in via Appian Web API.
       </Text>
 
+      {/* New Buttons */}
+      <TouchableOpacity 
+        style={styles.actionBtn} 
+        onPress={() => router.push('/profile')}
+      >
+        <Text style={styles.btnText}>View Profile</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.actionBtn}
+        onPress={() => router.push('/engagements')}
+      >
+        <Text style={styles.btnText}>View Engagements</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.actionBtn}
+        onPress={() => router.push('/invoice-expense')}
+      >
+        <Text style={styles.btnText}>View Invoice & Expense</Text>
+      </TouchableOpacity>
+
+      {/* Logout */}
       <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
         <Text style={styles.logoutText}>LOG OUT</Text>
       </TouchableOpacity>
@@ -53,11 +76,28 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 30
   },
+
+  actionBtn: {
+    backgroundColor: '#2d6cdf',
+    paddingVertical: 12,
+    paddingHorizontal: 26,
+    borderRadius: 8,
+    width: '80%',
+    alignItems: 'center',
+    marginBottom: 12
+  },
+  btnText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16
+  },
+
   logoutBtn: {
     backgroundColor: '#d9534f',
     paddingVertical: 12,
     paddingHorizontal: 26,
-    borderRadius: 8
+    borderRadius: 8,
+    marginTop: 20
   },
   logoutText: {
     color: '#fff',
