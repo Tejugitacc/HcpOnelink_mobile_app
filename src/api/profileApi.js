@@ -2,7 +2,8 @@
 import { backendURL } from '../constants/apiConstants.js';
 
 export async function fetchProfile(username,userId) {
-  const url = backendURL + '/api/cache/:' + userId + '/profile';
+  console.log("=== from profileapi.js",username,userId)
+  const url = backendURL + '/api/cache/' + userId + '/profile';
 
   const response = await fetch(url, {
     method: 'POST',

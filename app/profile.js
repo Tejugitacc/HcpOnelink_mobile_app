@@ -7,8 +7,7 @@ import { fetchProfile } from '../src/api/profileApi';
 export default function Profile() {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [userId, setUserId] = useState(null);
+
 
   useEffect(() => {
     loadData();
@@ -17,10 +16,7 @@ export default function Profile() {
   const loadData = async () => {
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
-
-    setUsername(storedUsername);
-    setUserId(storedUserId);
-
+    console.log(" AsyncStorage.", storedUsername, storedUserId);
     if (storedUsername && storedUserId) {
       getProfile(storedUsername, storedUserId);
     } else {
@@ -28,12 +24,13 @@ export default function Profile() {
     }
   };
 
-  const getProfile = async () => {
+  const getProfile = async (username, userId) => {
     try {
-      const res = await fetchProfile(username,userId)
-      const data = await res.json();
-      console.log("profile data",data)
-      setProfile(data);
+      console.log(" fecth profile.js", username, userId)
+      const res = await fetchProfile(username, userId)
+
+      console.log("profile data",)
+      setProfile(res?.data?.profile?.[0]);
     } catch (err) {
       console.error("API Error:", err);
     }
@@ -49,13 +46,17 @@ export default function Profile() {
 
       {profile ? (
         <View style={styles.card}>
-          <Text style={styles.info}>Name: {profile.name}</Text>
-          <Text style={styles.info}>Email: {profile.email}</Text>
-          <Text style={styles.info}>Phone: {profile.phone}</Text>
+          <Text style={styles.info}>Name: {profile.hcpFirstName} {profile.hcpLastName}</Text>
+          <Text style={styles.info}>Email: {profile.hcpEmail}</Text>
+          <Text style={styles.info}>Preferred Email: {profile.hcpPreferredEmail}</Text>
+          <Text style={styles.info}>Phone: {profile.hcpPhone}</Text>
+          <Text style={styles.info}>DSI ID: {profile.dsiId}</Text>
+          <Text style={styles.info}>Status: {profile.hcpStatus}</Text>
         </View>
       ) : (
         <Text>Loading...</Text>
       )}
+
     </View>
   );
 }
