@@ -12,6 +12,15 @@ export default function Engagements() {
     loadEngagements();
   }, []);
 
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/dashboard"); 
+    }
+  };
+  
+
   const loadEngagements = async () => {
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
@@ -19,7 +28,7 @@ export default function Engagements() {
     if (storedUsername && storedUserId) {
       try {
         const res = await fetchHcpAllEngagements(storedUsername, storedUserId);
-        setItems(res?.data?.invoicesExpenses ?? []);
+        setItems(res?.data?.engagements ?? []);
       } catch (err) {
         console.error("API Error:", err);
       }
@@ -43,7 +52,7 @@ export default function Engagements() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+      <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 

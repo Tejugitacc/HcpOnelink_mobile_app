@@ -15,6 +15,15 @@ export default function InvoiceExpense() {
     loadInvoice();
   }, []);
 
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/dashboard"); 
+    }
+  };
+
+  
   const loadInvoice = async () => {
     setLoading(true);
     const storedUsername = await AsyncStorage.getItem("userToken");
@@ -99,7 +108,7 @@ export default function InvoiceExpense() {
   return (
     <View style={styles.container}>
   
-      <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+      <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 

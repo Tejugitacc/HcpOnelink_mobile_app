@@ -8,15 +8,22 @@ export default function Profile() {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
 
-
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/dashboard");
+    }
+  };
   useEffect(() => {
     loadData();
   }, []);
 
+
   const loadData = async () => {
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
-   
+
     if (storedUsername && storedUserId) {
       getProfile(storedUsername, storedUserId);
     } else {
@@ -38,7 +45,7 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+      <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 
