@@ -16,7 +16,7 @@ export default function Profile() {
   const loadData = async () => {
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
-    console.log(" AsyncStorage.", storedUsername, storedUserId);
+   
     if (storedUsername && storedUserId) {
       getProfile(storedUsername, storedUserId);
     } else {

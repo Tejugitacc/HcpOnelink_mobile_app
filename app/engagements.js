@@ -1,6 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { fetchHcpAllEngagements } from '../src/api/engagementsApi';
 
 export default function Engagements() {
   const router = useRouter();
@@ -11,10 +13,33 @@ export default function Engagements() {
   }, []);
 
   const loadEngagements = async () => {
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
-    const data = await res.json();
-    setItems(data);
+    const storedUsername = await AsyncStorage.getItem("userToken");
+    const storedUserId = await AsyncStorage.getItem("userId");
+
+    if (storedUsername && storedUserId) {
+      try {
+        const res = await fetchHcpAllEngagements(storedUsername, storedUserId);
+        setItems(res?.data?.invoicesExpenses ?? []);
+      } catch (err) {
+        console.error("API Error:", err);
+      }
+    }
   };
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-US");
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{item.activityId}</Text>
+      <Text style={styles.cell}>{item.engagementName}</Text>
+      <Text style={styles.cell}>
+        {formatDate(item.activityStartDateTime)} - {formatDate(item.activityEndDateTime)}
+      </Text>
+      <Text style={styles.cell}>{item.initiator || "-"}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -22,31 +47,59 @@ export default function Engagements() {
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 
-      <Text style={styles.title}>Engagements</Text>
+      <Text style={styles.title}>Engagement Details</Text>
 
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Project ID</Text>
+        <Text style={styles.headerText}>Name</Text>
+        <Text style={styles.headerText}>Engagement Dates</Text>
+        <Text style={styles.headerText}>DSI Business Contact</Text>
+      </View>
+
+      {/* List */}
       <FlatList
         data={items}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.info}>{item.title}</Text>
-          </View>
-        )}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.pkId}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  container: { flex: 1, padding: 10, backgroundColor: "#fff" },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-  card: {
-    backgroundColor: "#f7f7fa",
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 12
+  title: { 
+    fontSize: 20, 
+    fontWeight: "bold", 
+    marginBottom: 10,
+    backgroundColor: "#135a9a",
+    color: "white",
+    padding: 10
   },
-  info: { fontSize: 16 }
+
+  header: {
+    flexDirection: "row",
+    backgroundColor: "#135a9a",
+    padding: 12,
+  },
+  headerText: {
+    flex: 1,
+    color: "white",
+    fontWeight: "bold"
+  },
+
+  row: {
+    flexDirection: "row",
+    padding: 12,
+    borderBottomWidth: 1,
+    borderColor: "#ddd",
+    backgroundColor: "#f7f7fa"
+  },
+  cell: {
+    flex: 1,
+    fontSize: 14,
+  }
 });
