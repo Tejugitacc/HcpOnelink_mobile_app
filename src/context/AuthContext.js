@@ -9,13 +9,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
 
-  const onLoginSuccess = async (username, userId) => {
+  const onLoginSuccess = async (username, response) => {
     try {
-      console.log("login repsonse 3", username, userId)
+      console.log("login repsonse 3", username, response.userId)
       await AsyncStorage.multiSet([
-        ['userToken', username],
-        ['userId', String(userId)]
+        ['userId', String(response.userId)],
+        ['userToken', response.token],
+        ['username', username]
       ]);
+      setUserToken(response.token);
       // navigate to dashboard
     } catch (err) {
       console.error('Failed to save login data', err);
@@ -27,17 +29,13 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
 
       const result = await loginToAppian(username, password);
-      console.log("login repsonse 1", result);
-      console.log("login 2 ", username, result.dsiID)
+
       if (!result.success) {
-        alert(result.message);   
+        alert(result.message);
         setLoading(false);
         return;
       }
-      await onLoginSuccess(username, result.dsiID)
-      console.log("login repsonse 4", result)
-      // Save user token locally (your choice)
-
+      await onLoginSuccess(username, result)
       setUserToken(username);
     } catch (error) {
       console.log('Login error:', error);
@@ -48,8 +46,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem('userToken');
-    await AsyncStorage.removeItem('userId');
+    const keysToRemove = ['username', 'cachedProfile', 'userId',
+       'userToken', 'cachedEngagements',
+      'cachedInvoices', 'cachedExpenses'];
+
+    try {
+      await AsyncStorage.multiRemove(keysToRemove);
+      console.log('Successfully removed multiple items.');
+    } catch (error) {
+      console.error('Error removing items:', error);
+    }
+
     setUserToken(null);
   };
 

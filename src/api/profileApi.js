@@ -1,16 +1,17 @@
 // app/src/api/auth.js
 import { backendURL } from '../constants/apiConstants.js';
 
-export async function fetchProfile(username,userId) {
-  console.log("=== from profileapi.js",username,userId)
-  const url = backendURL + '/api/cache/' + userId + '/profile';
+export async function fetchProfile(token, userId) {
+
+  const url = backendURL + '/api/user/' + userId + '/profile';
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'GET',
     headers: {
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ username})
+    // body: JSON.stringify({ username})
   });
 
   if (response.status === 401) {

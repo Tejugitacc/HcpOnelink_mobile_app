@@ -15,29 +15,43 @@ export default function Profile() {
       router.replace("/dashboard");
     }
   };
+
   useEffect(() => {
     loadData();
   }, []);
-
 
   const loadData = async () => {
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
 
+    // ⚡ Load cached profile instantly
+    const cached = await AsyncStorage.getItem("cachedProfile");
+    if (cached) {
+      setProfile(JSON.parse(cached));
+      console.log("⚡ Loaded profile from cache");
+    }
+
     if (storedUsername && storedUserId) {
-      getProfile(storedUsername, storedUserId);
+      getProfile();
     } else {
       console.log("❌ Missing username/userId in AsyncStorage.");
     }
   };
 
-  const getProfile = async (username, userId) => {
+  const getProfile = async () => {
     try {
-      console.log(" fecth profile.js", username, userId)
-      const res = await fetchProfile(username, userId)
+      const token = await AsyncStorage.getItem('userToken');
+      const userId = await AsyncStorage.getItem('userId');
+      const res = await fetchProfile(token, userId);
+      // res.source, res.data ...
+      const profileData = res?.data?.profile?.[0];
 
-      console.log("profile data",)
-      setProfile(res?.data?.profile?.[0]);
+      setProfile(profileData);
+
+      // ✔ Store to cache for offline use
+      await AsyncStorage.setItem("cachedProfile", JSON.stringify(profileData));
+      console.log("✔ Profile cached");
+
     } catch (err) {
       console.error("API Error:", err);
     }

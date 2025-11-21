@@ -19,33 +19,61 @@ export default function InvoiceExpense() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace("/dashboard"); 
+      router.replace("/dashboard");
     }
   };
 
-  
+
+  const getInvoiceExpenses = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const userId = await AsyncStorage.getItem('userId');
+      const res = await fetchHcpAllInvoicesExpenses(token, userId);
+      // res.source, res.data ...
+      const all = res?.data?.invoicesExpenses ?? [];
+
+      const invoices = all.filter(item => item.recordType === "Invoice");
+      const expenses = all.filter(item => item.recordType === "Expense");
+
+
+      // ✔ Store to cache for offline use
+      await AsyncStorage.setItem("cachedInvoices", JSON.stringify(invoices));
+      await AsyncStorage.setItem("cachedExpenses", JSON.stringify(expenses));
+      console.log("✔ Invoices and expenses cached");
+
+      setInvoiceList(invoices);
+      setExpenseList(expenses);
+
+    } catch (err) {
+      console.error("API Error:", err);
+    }
+  };
+
   const loadInvoice = async () => {
     setLoading(true);
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
 
+    // ⚡ Load cached profile instantly
+    const cachedInvoices = await AsyncStorage.getItem("cachedInvoices");
+    const cachedExpenses = await AsyncStorage.getItem("cachedInvoices");
+    if (cachedInvoices) {
+      setExpenseList(cachedInvoices ?? []);
+      console.log("⚡ Loaded Invoices from cache");
+    }
+    if (cachedExpenses) {
+      setExpenseList(cachedExpenses ?? []);
+      console.log("⚡ Loaded  Expenses  from cache");
+    }
+
+
     if (storedUsername && storedUserId) {
       try {
-        const res = await fetchHcpAllInvoicesExpenses(storedUsername, storedUserId);
-
-        const all = res?.data?.invoicesExpenses ?? [];
-
-        const invoices = all.filter(item => item.recordType === "Invoice");
-        const expenses = all.filter(item => item.recordType === "Expense");
-
-        setInvoiceList(invoices);
-        setExpenseList(expenses);
-
+        getInvoiceExpenses()
       } catch (err) {
         console.error("API Error:", err);
       }
     }
-
     setLoading(false);
   };
 
@@ -53,7 +81,7 @@ export default function InvoiceExpense() {
     <View style={styles.row}>
       <Text style={[styles.cell, styles.name]}>{item.engagementName}</Text>
       <Text style={[styles.cell]}>{item.contractNumber}</Text>
-      
+
       {/* Invoice specific field */}
       {item.recordType === "Invoice" && (
         <Text style={[styles.cell, styles.link]}>{item.invoiceExpenseId}</Text>
@@ -78,7 +106,7 @@ export default function InvoiceExpense() {
       <View style={styles.headerRow}>
         <Text style={styles.sectionTitle}>{title}</Text>
         <Loader loading={loading} message="Loading..." />
-{/* 
+        {/* 
         <TouchableOpacity onPress={loadInvoice}>
           <Text style={styles.refreshBtn}>🔄</Text>
         </TouchableOpacity> */}
@@ -107,7 +135,7 @@ export default function InvoiceExpense() {
 
   return (
     <View style={styles.container}>
-  
+
       <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>

@@ -3,10 +3,12 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { fetchHcpAllEngagements } from '../src/api/engagementsApi';
+import Loader from '../src/components/loader';
 
 export default function Engagements() {
   const router = useRouter();
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadEngagements();
@@ -16,24 +18,51 @@ export default function Engagements() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace("/dashboard"); 
+      router.replace("/dashboard");
     }
   };
-  
+
+  const getEngagements = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const userId = await AsyncStorage.getItem('userId');
+      const res = await fetchHcpAllEngagements(token, userId);
+      // res.source, res.data ...
+      const engagementData = res?.data?.engagements?.[0];
+
+      setItems(res?.data?.engagements ?? []);
+
+      // ✔ Store to cache for offline use
+      await AsyncStorage.setItem("cachedEngagements", JSON.stringify(engagementData));
+      console.log("✔ Engagement cached");
+
+    } catch (err) {
+      console.error("API Error:", err);
+    }
+  };
 
   const loadEngagements = async () => {
+    setLoading(true);
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
 
+    // ⚡ Load cached profile instantly
+    const cached = await AsyncStorage.getItem("cachedEngagements");
+    if (cached) {
+      setItems(cached?.data?.engagements ?? []);
+      console.log("⚡ Loaded Engagements from cache");
+    }
+
     if (storedUsername && storedUserId) {
       try {
-        const res = await fetchHcpAllEngagements(storedUsername, storedUserId);
-        setItems(res?.data?.engagements ?? []);
+        getEngagements()
       } catch (err) {
         console.error("API Error:", err);
       }
     }
+    setLoading(false);
   };
+
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US");
@@ -57,6 +86,7 @@ export default function Engagements() {
       </TouchableOpacity>
 
       <Text style={styles.title}>Engagement Details</Text>
+      <Loader loading={loading} message="Loading..." />
 
       {/* Header */}
       <View style={styles.header}>
@@ -80,9 +110,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 10, backgroundColor: "#fff" },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },
-  title: { 
-    fontSize: 20, 
-    fontWeight: "bold", 
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
     marginBottom: 10,
     backgroundColor: "#135a9a",
     color: "white",

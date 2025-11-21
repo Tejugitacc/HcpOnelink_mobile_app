@@ -1,16 +1,17 @@
 // app/src/api/auth.js
 import { backendURL } from '../constants/apiConstants.js';
 
-export async function fetchHcpAllEngagements(username,userId) {
+export async function fetchHcpAllEngagements(token,userId) {
 
-  const url = backendURL + '/api/cache/' + userId + '/engagements';
+  const url = backendURL + '/api/user/' + userId + '/engagements';
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'GET',
     headers: {
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ username})
+    // body: JSON.stringify({ username})
   });
 
   if (response.status === 401) {
