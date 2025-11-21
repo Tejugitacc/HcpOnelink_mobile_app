@@ -88,9 +88,10 @@ const styles = StyleSheet.create({
   backText: { fontSize: 18, color: "#2d6cdf" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
   card: {
-    backgroundColor: "#f0f4ff",
+    backgroundColor: "rgb(142 169 241)",
     padding: 20,
-    borderRadius: 10
+    borderRadius: 10,
+    margin: 8,
   },
-  info: { fontSize: 16, marginBottom: 6 }
-});
+    info: { fontSize: 16, marginBottom: 6 }
+  });

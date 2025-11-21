@@ -9,6 +9,7 @@ export default function Engagements() {
   const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
     loadEngagements();
@@ -64,20 +65,42 @@ export default function Engagements() {
   };
 
 
+
+  const toggleExpand = (id) => {
+    setExpandedId(prev => (prev === id ? null : id));
+  };
+
+
+
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US");
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.row}>
-      <Text style={styles.cell}>{item.activityId}</Text>
-      <Text style={styles.cell}>{item.engagementName}</Text>
-      <Text style={styles.cell}>
-        {formatDate(item.activityStartDateTime)} - {formatDate(item.activityEndDateTime)}
-      </Text>
-      <Text style={styles.cell}>{item.initiator || "-"}</Text>
+    <View>
+      {/* Row */}
+      <TouchableOpacity onPress={() => toggleExpand(item.pkId)}>
+        <View style={styles.row}>
+          <Text style={styles.cellFirstItem}>{item.activityId}</Text>
+          <Text style={styles.cell}>{item.engagementName}</Text>
+        </View>
+      </TouchableOpacity>
+
+      {/* Expanded Card */}
+      {expandedId === item.pkId && (
+        <View style={styles.card}>
+          <Text style={styles.label}>Engagement Dates:</Text>
+          <Text style={styles.value}>
+            {formatDate(item.activityStartDateTime)} - {formatDate(item.activityEndDateTime)}
+          </Text>
+
+          <Text style={styles.label}>DSI Business Contact:</Text>
+          <Text style={styles.value}>{item.initiator || "-"}</Text>
+        </View>
+      )}
     </View>
   );
+
 
   return (
     <View style={styles.container}>
@@ -92,8 +115,6 @@ export default function Engagements() {
       <View style={styles.header}>
         <Text style={styles.headerText}>Project ID</Text>
         <Text style={styles.headerText}>Name</Text>
-        <Text style={styles.headerText}>Engagement Dates</Text>
-        <Text style={styles.headerText}>DSI Business Contact</Text>
       </View>
 
       {/* List */}
@@ -135,10 +156,43 @@ const styles = StyleSheet.create({
     padding: 12,
     borderBottomWidth: 1,
     borderColor: "#ddd",
-    backgroundColor: "#f7f7fa"
+    backgroundColor: "#fff",
   },
+
   cell: {
     flex: 1,
     fontSize: 14,
-  }
+    color: "#333",
+  },
+
+  cellFirstItem: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "bold",
+    marginTop: 6,
+    color: "#135a9a",
+  },
+
+  card: {
+    backgroundColor: "#f7f9fc",
+    padding: 12,
+    marginBottom: 8,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#d0d7e2",
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginTop: 6,
+    color: "#135a9a",
+  },
+
+  value: {
+    fontSize: 14,
+    color: "#333",
+    marginTop: 2,
+  },
+
 });

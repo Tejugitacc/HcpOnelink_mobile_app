@@ -10,10 +10,15 @@ export default function InvoiceExpense() {
   const [invoiceList, setInvoiceList] = useState([]);
   const [expenseList, setExpenseList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
     loadInvoice();
   }, []);
+
+  const toggleExpand = (id) => {
+    setExpandedId(prev => (prev === id ? null : id));
+  };
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -77,29 +82,42 @@ export default function InvoiceExpense() {
     setLoading(false);
   };
 
-  const renderRow = (item) => (
-    <View style={styles.row}>
-      <Text style={[styles.cell, styles.name]}>{item.engagementName}</Text>
-      <Text style={[styles.cell]}>{item.contractNumber}</Text>
-
-      {/* Invoice specific field */}
-      {item.recordType === "Invoice" && (
+const renderRow = (item) => (
+  <View>
+    {/* Compact Table Row */}
+    <TouchableOpacity onPress={() => toggleExpand(item.invoiceExpenseId)}>
+      <View style={styles.row}>
+        <Text style={[styles.cell, styles.name]}>{item.engagementName}</Text>
+        <Text style={styles.cell}>{item.contractNumber}</Text>
         <Text style={[styles.cell, styles.link]}>{item.invoiceExpenseId}</Text>
-      )}
-
-      {/* Expense specific field */}
-      {item.recordType === "Expense" && (
-        <Text style={[styles.cell, styles.link]}>{item.invoiceExpenseId}</Text>
-      )}
-
-      <Text style={styles.cell}>{item.createdOn}</Text>
-      <Text style={styles.cell}>${item.paymentTotal}</Text>
-
-      <View style={styles.statusBox}>
-        <Text style={styles.statusText}>{item.status}</Text>
       </View>
-    </View>
-  );
+    </TouchableOpacity>
+
+    {/* Expanded Card */}
+    {expandedId === item.invoiceExpenseId && (
+      <View style={styles.card}>
+        <Text style={styles.label}>Engagement Name:</Text>
+        <Text style={styles.value}>{item.engagementName}</Text>
+
+        <Text style={styles.label}>Contract Number:</Text>
+        <Text style={styles.value}>{item.contractNumber}</Text>
+
+        <Text style={styles.label}>{item.recordType === "Invoice" ? "Invoice #" : "Expense ID"}:</Text>
+        <Text style={styles.value}>{item.invoiceExpenseId}</Text>
+
+        <Text style={styles.label}>Submission Date:</Text>
+        <Text style={styles.value}>{item.createdOn}</Text>
+
+        <Text style={styles.label}>Total Amount:</Text>
+        <Text style={styles.value}>${item.paymentTotal}</Text>
+
+        <Text style={styles.label}>Status:</Text>
+        <Text style={[styles.value, { fontWeight: "bold" }]}>{item.status}</Text>
+      </View>
+    )}
+  </View>
+);
+
 
   const renderTable = (title, data) => (
     <View style={styles.section}>
@@ -114,11 +132,7 @@ export default function InvoiceExpense() {
 
       <View style={styles.tableHeader}>
         <Text style={[styles.headerCell, styles.name]}>Engagement Name</Text>
-        <Text style={styles.headerCell}>Contract #</Text>
         <Text style={styles.headerCell}>{title === "Invoices" ? "Invoice #" : "Expense ID"}</Text>
-        <Text style={styles.headerCell}>Submission Date</Text>
-        <Text style={styles.headerCell}>Total</Text>
-        <Text style={styles.headerCell}>Status</Text>
       </View>
 
       {data.length === 0 ? (
@@ -180,5 +194,28 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#004a99",
     fontWeight: "bold"
-  }
+  },
+  card: {
+    backgroundColor: "#f7f9fc",
+    padding: 12,
+    marginHorizontal: 10,
+    marginBottom: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#d0d7e2",
+  },
+  
+  label: {
+    fontSize: 13,
+    fontWeight: "bold",
+    marginTop: 8,
+    color: "#135a9a",
+  },
+  
+  value: {
+    fontSize: 13,
+    color: "#333",
+    marginTop: 2,
+  },
+  
 });
