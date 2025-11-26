@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { fetchProfile } from '../src/api/profileApi';
 
 export default function Profile() {
@@ -65,8 +65,15 @@ export default function Profile() {
 
       <Text style={styles.title}>Profile</Text>
 
+
       {profile ? (
         <View style={styles.card}>
+          <View style={styles.updateBtn}>
+            <Button
+              title="Update My Profile"
+              onPress={() => router.push("/updateProfile")}
+            />
+          </View>
           <Text style={styles.info}>Name: {profile.hcpFirstName} {profile.hcpLastName}</Text>
           <Text style={styles.info}>Email: {profile.hcpEmail}</Text>
           <Text style={styles.info}>Preferred Email: {profile.hcpPreferredEmail}</Text>
@@ -93,5 +100,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 8,
   },
-    info: { fontSize: 16, marginBottom: 6 }
-  });
+  updateBtn: {
+    padding: 10,
+    borderRadius: 5,
+    margin: 4,
+  },
+  info: { fontSize: 16, marginBottom: 6 }
+});
