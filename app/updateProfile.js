@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Button, ScrollView, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Button, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
 import { updateHcpProfile } from "../src/api/engagementsApi";
 
@@ -11,7 +11,15 @@ export default function UpdateProfileScreen() {
     const [loading, setLoading] = useState(true);
     const [initialData, setInitialData] = useState(null);
     const [userId, setUserId] = useState(null);
-    const router = useRouter()
+    const router = useRouter();
+
+    const handleBack = () => {
+        if (router.canGoBack()) {
+            router.back();
+        } else {
+            router.replace("/dashboard");
+        }
+    };
 
     // Load user + cached profile
     const loadProfile = async () => {
@@ -48,7 +56,8 @@ export default function UpdateProfileScreen() {
     const onSubmit = async (values) => {
         try {
             const token = await AsyncStorage.getItem('userToken');
-            const response = await updateHcpProfile(token,userId,values);
+            const response = await updateHcpProfile(token, userId, values);
+            console.log("heyy");
             Alert.alert("Success", "Profile updated!", [
                 { text: "OK", onPress: () => router.back() }
             ]);
@@ -59,7 +68,14 @@ export default function UpdateProfileScreen() {
     };
 
     return (
+        <View style={styles.container}>
         <ScrollView style={{ padding: 16 }}>
+
+                <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
+                    <Text style={styles.backText}>← Back</Text>
+                </TouchableOpacity>
+ 
+
             <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 10 }}>
                 Update Profile
             </Text>
@@ -108,10 +124,14 @@ export default function UpdateProfileScreen() {
                 )}
             </Formik>
         </ScrollView>
+        </View>
     );
 }
 
 const styles = {
+    container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+    backBtn: { marginBottom: 10 },
+    backText: { fontSize: 18, color: "#2d6cdf" },
     input: {
         borderWidth: 1,
         borderColor: "#ccc",
