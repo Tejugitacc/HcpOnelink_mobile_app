@@ -70,7 +70,7 @@ export default function Profile() {
         <View style={styles.card}>
           <View style={styles.updateBtn}>
             <Button
-              title="Update My Profile"
+              title="Edit Profile"
               onPress={() => router.push("/updateProfile")}
             />
           </View>

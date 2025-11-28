@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Button, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Button, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
 import { updateHcpProfile } from "../src/api/engagementsApi";
 
@@ -57,7 +57,10 @@ export default function UpdateProfileScreen() {
         try {
             const token = await AsyncStorage.getItem('userToken');
             const response = await updateHcpProfile(token, userId, values);
-            console.log("heyy");
+            if (Platform.OS === "web") {
+                alert(response.data.message)
+                router.replace("/profile");
+            }
             Alert.alert("Success", "Profile updated!", [
                 { text: "OK", onPress: () => router.back() }
             ]);
@@ -69,67 +72,72 @@ export default function UpdateProfileScreen() {
 
     return (
         <View style={styles.container}>
-        <ScrollView style={{ padding: 16 }}>
+            <ScrollView style={{ padding: 16 }}>
 
                 <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
                     <Text style={styles.backText}>← Back</Text>
                 </TouchableOpacity>
- 
 
-            <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 10 }}>
-                Update Profile
-            </Text>
 
-            <Formik
-                initialValues={initialData}
-                validationSchema={validationSchema}
-                onSubmit={onSubmit}
-                enableReinitialize={true}
-            >
-                {({ values, handleChange, handleSubmit, errors }) => (
-                    <View>
-                        <Text>First Name</Text>
-                        <TextInput
-                            value={values.hcpFirstName}
-                            onChangeText={handleChange("hcpFirstName")}
-                            style={styles.input}
-                        />
-                        {errors.hcpFirstName && <Text style={styles.error}>{errors.hcpFirstName}</Text>}
+                <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 10 }}>
+                    Edit Profile
+                </Text>
 
-                        <Text>Last Name</Text>
-                        <TextInput
-                            value={values.hcpLastName}
-                            onChangeText={handleChange("hcpLastName")}
-                            style={styles.input}
-                        />
+                <Formik
+                    initialValues={initialData}
+                    validationSchema={validationSchema}
+                    onSubmit={onSubmit}
+                    enableReinitialize={true}
+                >
+                    {({ values, handleChange, handleSubmit, errors }) => (
+                        <View style={styles.formContainer}>
+                            <Text>First Name</Text>
+                            <TextInput
+                                value={values.hcpFirstName}
+                                onChangeText={handleChange("hcpFirstName")}
+                                style={styles.input}
+                            />
+                            {errors.hcpFirstName && <Text style={styles.error}>{errors.hcpFirstName}</Text>}
 
-                        <Text>Email</Text>
-                        <TextInput
-                            value={values.hcpEmail}
-                            onChangeText={handleChange("hcpEmail")}
-                            style={styles.input}
-                            keyboardType="email-address"
-                        />
+                            <Text>Last Name</Text>
+                            <TextInput
+                                value={values.hcpLastName}
+                                onChangeText={handleChange("hcpLastName")}
+                                style={styles.input}
+                            />
 
-                        <Text>Phone Number</Text>
-                        <TextInput
-                            value={String(values.hcpPhone || "")}
-                            onChangeText={handleChange("hcpPhone")}
-                            keyboardType="numeric"
-                            style={styles.input}
-                        />
+                            <Text>Email</Text>
+                            <TextInput
+                                value={values.hcpEmail}
+                                onChangeText={handleChange("hcpEmail")}
+                                style={styles.input}
+                                keyboardType="email-address"
+                            />
 
-                        <Button title="Save Changes" onPress={handleSubmit} />
-                    </View>
-                )}
-            </Formik>
-        </ScrollView>
+                            <Text>Phone Number</Text>
+                            <TextInput
+                                value={String(values.hcpPhone || "")}
+                                onChangeText={handleChange("hcpPhone")}
+                                keyboardType="numeric"
+                                style={styles.input}
+                            />
+
+                            <Button title="Save Changes" onPress={handleSubmit} />
+                        </View>
+                    )}
+                </Formik>
+            </ScrollView>
         </View>
     );
 }
 
 const styles = {
     container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+    formContainer: {
+        padding: 10, margin: 10, borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+    },
     backBtn: { marginBottom: 10 },
     backText: { fontSize: 18, color: "#2d6cdf" },
     input: {
