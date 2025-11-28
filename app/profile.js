@@ -7,6 +7,7 @@ import { fetchProfile } from '../src/api/profileApi';
 export default function Profile() {
   const router = useRouter();
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -21,6 +22,7 @@ export default function Profile() {
   }, []);
 
   const loadData = async () => {
+    setLoading(true)
     const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
 
@@ -47,7 +49,7 @@ export default function Profile() {
       const profileData = res?.data?.profile?.[0];
 
       setProfile(profileData);
-
+      setLoading(false)
       // ✔ Store to cache for offline use
       await AsyncStorage.setItem("cachedProfile", JSON.stringify(profileData));
       console.log("✔ Profile cached");
@@ -64,6 +66,7 @@ export default function Profile() {
       </TouchableOpacity>
 
       <Text style={styles.title}>Profile</Text>
+      {/* <Loader loading={loading} message="Loading..." /> */}
 
 
       {profile ? (

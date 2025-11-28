@@ -29,7 +29,7 @@ export default function Engagements() {
       const userId = await AsyncStorage.getItem('userId');
       const res = await fetchHcpAllEngagements(token, userId);
       // res.source, res.data ...
-      const engagementData = res?.data?.engagements?.[0];
+      const engagementData = res?.data?.engagements;
 
       setItems(res?.data?.engagements ?? []);
 
@@ -118,25 +118,25 @@ export default function Engagements() {
       </View>
 
       {/* List */}
-      {items.length === 0 ? <>
-      <View>
-        <Text>No Engagements available</Text>
-      </View>
-      </> : 
+      {items ? (<>
         <FlatList
-        data={items}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.pkId}
-      />
-      }
-    
+          data={items}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.pkId}
+        />
+      </>) : (
+        <View style={styles.noItemsContainer}>
+          <Text>No Engagements available</Text>
+        </View>
+      )}
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 10, backgroundColor: "#fff" },
-  noItemsContainer : { padding: 20, margin : 10 , alignContent:"center",border :"2px solid beige"},
+  noItemsContainer: { padding: 20, margin: 10, alignItems: "center", border: "2px solid beige" },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },
   title: {
