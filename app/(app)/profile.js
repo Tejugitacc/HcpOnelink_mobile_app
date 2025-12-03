@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { fetchProfile } from '../src/api/profileApi';
+import { fetchProfile } from '../../src/api/profileApi';
 
 export default function Profile() {
   const router = useRouter();

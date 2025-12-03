@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { fetchHcpAllEngagements } from '../src/api/engagementsApi';
-import Loader from '../src/components/loader';
+import { fetchHcpAllEngagements } from '../../src/api/engagementsApi';
+import Loader from '../../src/components/loader';
 
 export default function Engagements() {
   const router = useRouter();
@@ -118,7 +118,7 @@ export default function Engagements() {
       </View>
 
       {/* List */}
-      {items ? (<>
+      {items & items.length>0 ? (<>
         <FlatList
           data={items}
           renderItem={renderItem}
@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#135a9a",
     color: "white",
-    padding: 10
+    padding: 10,
+    marginTop: 45,
   },
 
   header: {

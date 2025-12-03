@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Button, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
-import { updateHcpProfile } from "../src/api/engagementsApi";
+import { updateHcpProfile } from "../../src/api/engagementsApi";
 
 export default function UpdateProfileScreen() {
 

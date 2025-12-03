@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { fetchHcpAllInvoicesExpenses } from '../src/api/invoiceExpensesAPis';
-import Loader from "../src/components/loader";
+import { fetchHcpAllInvoicesExpenses } from '../../src/api/invoiceExpensesAPis';
+import Loader from "../../src/components/loader";
 
 export default function InvoiceExpense() {
   const router = useRouter();

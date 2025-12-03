@@ -11,7 +11,7 @@ import {
 
 import FormInput from '../src/components/FormInput';
 import PrimaryButton from '../src/components/PrimaryButton';
-import { AuthContext } from '../src/context/AuthContext';
+import { AuthContext } from '../src/contexts/AuthContext';
 
 export default function LoginScreen() {
   const { login, userToken, loading } = useContext(AuthContext);
