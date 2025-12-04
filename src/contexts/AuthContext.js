@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as jwt from 'jwt-decode';
-import React, { createContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useRef, useState } from 'react';
 import { loginToAppian } from '../api/auth';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [userToken, setUserToken] = useState(null);
+  // const [userToken, setUserToken] = useState(null);
   const [userName, setUserName] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -51,16 +51,17 @@ export const AuthProvider = ({ children }) => {
   // -----------------------------------------
   const onLoginSuccess = async (username, response) => {
     try {
+      // await AsyncStorage.setItem("appianCookie", response.cookies);
+
       await AsyncStorage.multiSet([
         ['userId', String(response.userId)],
-        ['userToken', response.token],
         ['username', username]
       ]);
 
-      setUserToken(response.token);
+      // setUserToken(response.cookies);
       setUserName(username);
 
-      scheduleAutoLogout(response.token);
+      scheduleAutoLogout(response.cookies);
     } catch (err) {
       console.error('Failed to save login data', err);
     }
@@ -96,7 +97,7 @@ export const AuthProvider = ({ children }) => {
 
     const keysToRemove = [
       'username', 'cachedProfile', 'userId',
-      'userToken', 'cachedEngagements',
+      'appianCookie', 'cachedEngagements',
       'cachedInvoices', 'cachedExpenses'
     ];
 
@@ -107,49 +108,49 @@ export const AuthProvider = ({ children }) => {
       console.error('Error removing items:', error);
     }
 
-    setUserToken(null);
+    // setUserToken(null);
     setUserName(null);
   };
 
   // -----------------------------------------
   // RESTORE SESSION ON APP LAUNCH
   // -----------------------------------------
-  const restoreSession = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const username = await AsyncStorage.getItem('username');
+  // const restoreSession = async () => {
+  //   try {
+  //     const token = await AsyncStorage.getItem('userToken');
+  //     const username = await AsyncStorage.getItem('username');
 
-      if (token) {
-        try {
-          const decoded = jwt.jwtDecode(token);
+  //     if (token) {
+  //       try {
+  //         const decoded = jwt.jwtDecode(token);
 
-          if (decoded.exp * 1000 > Date.now()) {
-            // token is valid
-            setUserToken(token);
-            setUserName(username);
-            scheduleAutoLogout(token);
-          } else {
-            // token expired
-            console.log("Token expired → forcing logout");
-            logout();
-          }
-        } catch (err) {
-          console.log("Failed to decode stored token → logout");
-          logout();
-        }
-      }
+  //         if (decoded.exp * 1000 > Date.now()) {
+  //           // token is valid
+  //           setUserToken(token);
+  //           setUserName(username);
+  //           scheduleAutoLogout(token);
+  //         } else {
+  //           // token expired
+  //           console.log("Token expired → forcing logout");
+  //           logout();
+  //         }
+  //       } catch (err) {
+  //         console.log("Failed to decode stored token → logout");
+  //         logout();
+  //       }
+  //     }
 
-    } catch (error) {
-      console.error("Restore session failed:", error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Restore session failed:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    restoreSession();
-  }, []);
+  // useEffect(() => {
+  //   restoreSession();
+  // }, []);
 
   return (
-    <AuthContext.Provider value={{ login, logout, userToken, loading, userName }}>
+    <AuthContext.Provider value={{ login, logout, /*userToken*/  loading, userName }}>
       {children}
     </AuthContext.Provider>
   );
