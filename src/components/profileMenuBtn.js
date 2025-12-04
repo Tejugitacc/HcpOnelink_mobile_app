@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { AuthContext } from "../src/contexts/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 
 export default function ProfileMenuButton() {
     const { userName, logout } = useContext(AuthContext);

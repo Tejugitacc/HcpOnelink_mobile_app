@@ -1,27 +1,27 @@
 import { Stack, useRouter } from 'expo-router';
 import { useContext, useEffect } from 'react';
+import ProfileMenuBtn from '../../src/components/profileMenuBtn';
 import { AuthContext } from '../../src/contexts/AuthContext';
-import ProfileMenuButton from '../profileMenuBtn';
 
 export default function ProtectedLayout() {
-  const { userToken, loading } = useContext(AuthContext);
+  const { userToken } = useContext(AuthContext);
   const router = useRouter();
 
-  // Redirect to login if not authenticated
   useEffect(() => {
-    if (!loading && !userToken) {
+    if (!userToken) {
       router.replace('/');
     }
-  }, [loading, userToken]);
-
-  // Show splash/blank screen while checking auth
-  if (loading) return null;
+  }, [userToken]);
 
   return (
     <>
-      <ProfileMenuButton />
-
-      <Stack screenOptions={{ headerShown: false }} />
+      <ProfileMenuBtn />      {/* Shows only when logged in */}
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="dashboard" />
+        <Stack.Screen name="profile" />
+        <Stack.Screen name="engagements" />
+        <Stack.Screen name="invoice-expense" />
+      </Stack>
     </>
   );
 }
