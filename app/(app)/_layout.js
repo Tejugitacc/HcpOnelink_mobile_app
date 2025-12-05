@@ -1,27 +1,26 @@
-import { Stack, useRouter } from 'expo-router';
-import { useContext, useEffect } from 'react';
-import ProfileMenuBtn from '../../src/components/profileMenuBtn';
+import { Redirect, Stack } from 'expo-router';
+import { useContext } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { AuthContext } from '../../src/contexts/AuthContext';
 
-export default function ProtectedLayout() {
-  const { userToken } = useContext(AuthContext);
-  const router = useRouter();
+export default function AppGroupLayout() {
+  const { userId, initializing } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (!userToken) {
-      router.replace('/');
-    }
-  }, [userToken]);
+  if (initializing) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
-  return (
-    <>
-      <ProfileMenuBtn />      {/* Shows only when logged in */}
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="dashboard" />
-        <Stack.Screen name="profile" />
-        <Stack.Screen name="engagements" />
-        <Stack.Screen name="invoice-expense" />
-      </Stack>
-    </>
-  );
+  if (!userId) {
+    return <Redirect href="/" />;
+  }
+
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
+
+const styles = StyleSheet.create({
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' }
+});

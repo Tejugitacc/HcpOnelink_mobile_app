@@ -14,18 +14,22 @@ import PrimaryButton from '../src/components/PrimaryButton';
 import { AuthContext } from '../src/contexts/AuthContext';
 
 export default function LoginScreen() {
-  const { login, userToken, loading } = useContext(AuthContext);
+  const { login, userId, loading } = useContext(AuthContext);
   const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
+  console.log("LoginScreen rendered with userName:", userName);
+  // -----------------------------------------
+  // REDIRECT AFTER LOGIN (using userName now)
+  // -----------------------------------------
   useEffect(() => {
-    if (userToken) {
-      router.replace('/dashboard');
+    if (userId) {
+      router.replace('/(app)/dashboard');
     }
-  }, [userToken]);
+  }, [userId]);
 
   const validate = () => {
     const e = {};

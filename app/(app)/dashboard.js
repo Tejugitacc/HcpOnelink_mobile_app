@@ -1,10 +1,8 @@
 
 import { useRouter } from 'expo-router';
-import { useContext } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { AuthContext } from '../../src/contexts/AuthContext';
 export default function Dashboard() {
-  const { userName } = useContext(AuthContext);
+  // const { userName } = useContext(AuthContext);
   const router = useRouter();
 
 
@@ -13,19 +11,19 @@ export default function Dashboard() {
     <View style={styles.container}>
 
       <Text style={styles.title}>Welcome</Text>
-      <Text style={styles.username}>{userName}</Text>
+      {/* <Text style={styles.username}>{userName}</Text> */}
       <Text style={styles.subtitle}>You are now logged in via Appian Web API.</Text>
 
       {/* Buttons */}
-      <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/profile')}>
+      <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/(app)/profile')}>
         <Text style={styles.btnText}>View Profile</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/engagements')}>
+      <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/(app)/engagements')}>
         <Text style={styles.btnText}>View Engagements</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/invoice-expense')}>
+      <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/(app)/invoice-expense')}>
         <Text style={styles.btnText}>View Invoice & Expense</Text>
       </TouchableOpacity>
 
