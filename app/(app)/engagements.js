@@ -19,19 +19,19 @@ export default function Engagements() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace("/dashboard");
+      router.replace("/(app)/dashboard");
     }
   };
 
   const getEngagements = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken');
-      const userId = await AsyncStorage.getItem('userId');
-      const res = await fetchHcpAllEngagements(token, userId);
-      // res.source, res.data ...
-      const engagementData = res?.data?.engagements;
 
-      setItems(res?.data?.engagements ?? []);
+      const userId = await AsyncStorage.getItem('userId');
+      const res = await fetchHcpAllEngagements(userId);
+      // res.source, res.data ...
+      const engagementData = res?.engagements;
+
+      setItems(res?.engagements ?? []);
 
       // ✔ Store to cache for offline use
       await AsyncStorage.setItem("cachedEngagements", JSON.stringify(engagementData));
@@ -44,7 +44,7 @@ export default function Engagements() {
 
   const loadEngagements = async () => {
     setLoading(true);
-    const storedUsername = await AsyncStorage.getItem("userToken");
+
     const storedUserId = await AsyncStorage.getItem("userId");
 
     // ⚡ Load cached profile instantly
@@ -54,7 +54,7 @@ export default function Engagements() {
       console.log("⚡ Loaded Engagements from cache");
     }
 
-    if (storedUsername && storedUserId) {
+    if (storedUserId) {
       try {
         getEngagements()
       } catch (err) {
@@ -118,7 +118,7 @@ export default function Engagements() {
       </View>
 
       {/* List */}
-      {items & items.length>0 ? (<>
+      {items & items.length > 0 ? (<>
         <FlatList
           data={items}
           renderItem={renderItem}
@@ -135,7 +135,7 @@ export default function Engagements() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10, backgroundColor: "#fff" },
+  container: { flex: 1, padding: 10, backgroundColor: "#fff", marginTop: 40 },
   noItemsContainer: { padding: 20, margin: 10, alignItems: "center", border: "2px solid beige" },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },

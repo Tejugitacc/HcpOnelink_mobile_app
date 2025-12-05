@@ -7,7 +7,7 @@ export async function fetchHcpAllInvoicesExpenses(userId) {
   const headers = await authHeader();
 
   const response = await fetch(url, {
-    method: 'GET',
+    method: 'POST',
     headers,
   });
 
