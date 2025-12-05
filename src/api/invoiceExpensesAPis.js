@@ -1,19 +1,19 @@
 // src\api\invoiceExpensesAPis.js
 import { invoicesExpensesURL } from '../constants/apiConstants';
-import { authHeader } from '../helpers/apiHeader.js';
+import { authHeader } from '../helpers/authHeader';
 
 export async function fetchHcpAllInvoicesExpenses(userId) {
   const url = invoicesExpensesURL + '?userId=' + userId;
   const headers = await authHeader();
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'GET',
     headers,
   });
 
   const text = await response.text();
 
-  console.log("RAW INVOices expenses:", text);
+  // console.log("RAW Invoices Expenses:", text);
 
   if (response.status === 401) {
     return { success: false, message: "Unauthorized" };

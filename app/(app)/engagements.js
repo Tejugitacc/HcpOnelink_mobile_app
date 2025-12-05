@@ -28,9 +28,7 @@ export default function Engagements() {
 
       const userId = await AsyncStorage.getItem('userId');
       const res = await fetchHcpAllEngagements(userId);
-      // res.source, res.data ...
       const engagementData = res?.engagements;
-
       setItems(res?.engagements ?? []);
 
       // ✔ Store to cache for offline use
@@ -118,7 +116,7 @@ export default function Engagements() {
       </View>
 
       {/* List */}
-      {items & items.length > 0 ? (<>
+      {items ? (<>
         <FlatList
           data={items}
           renderItem={renderItem}
@@ -135,7 +133,7 @@ export default function Engagements() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10, backgroundColor: "#fff", marginTop: 40 },
+  container: { flex: 1, padding: 10, backgroundColor: "#fff", marginTop: 50 },
   noItemsContainer: { padding: 20, margin: 10, alignItems: "center", border: "2px solid beige" },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },

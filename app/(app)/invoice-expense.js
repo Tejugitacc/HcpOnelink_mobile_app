@@ -34,7 +34,8 @@ export default function InvoiceExpense() {
       const userId = await AsyncStorage.getItem('userId');
       const res = await fetchHcpAllInvoicesExpenses(userId);
       // res.source, res.data ...
-      const all = res?.data?.invoicesExpenses ?? [];
+      // console.log("=**************", res);  
+      const all = res?.invoicesExpenses ?? [];
 
       const invoices = all.filter(item => item.recordType === "Invoice");
       const expenses = all.filter(item => item.recordType === "Expense");

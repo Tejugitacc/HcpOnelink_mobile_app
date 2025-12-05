@@ -1,6 +1,6 @@
 // app/src/api/auth.js
 import { getEngagementsURL, updateProfileURL } from '../constants/apiConstants';
-import { authHeader } from '../helpers/apiHeader.js';
+import { authHeader } from '../helpers/authHeader';
 
 export async function fetchHcpAllEngagements(userId) {
 
@@ -13,7 +13,7 @@ export async function fetchHcpAllEngagements(userId) {
 
   const text = await response.text();
 
-  console.log("RAW INVOices expenses:", text);
+  // console.log("RAW Engagements:", text);
   if (response.status === 401) {
     return { success: false, message: 'Invalid username or password' };
   }
@@ -34,7 +34,7 @@ export async function fetchHcpAllEngagements(userId) {
 }
 
 export async function updateHcpProfile(userId, payload) {
-  console.log("in api token,userId,payload", token, userId, payload)
+  console.log("in api token,userId,payload", userId, payload)
 
   const url = updateProfileURL + '?userId=' + userId;
   const headers = await authHeader();

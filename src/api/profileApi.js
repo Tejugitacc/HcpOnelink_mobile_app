@@ -1,6 +1,6 @@
 // src/api/profileApi.js
 import { viewProfileURL } from '../constants/apiConstants';
-import { authHeader } from '../helpers/apiHeader.js';
+import { authHeader } from '../helpers/authHeader';
 
 export async function fetchProfile(userId) {
   const url = viewProfileURL + '?userId=' + userId;
@@ -14,7 +14,7 @@ export async function fetchProfile(userId) {
 
   const text = await response.text();
 
-  console.log("RAW Appian response:", text);
+  // console.log("RAW Appian response:", text);
 
   if (response.status === 401) {
     return { success: false, message: "Unauthorized" };

@@ -1,11 +1,11 @@
 
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+
 export default function Dashboard() {
-  // const { userName } = useContext(AuthContext);
+
   const router = useRouter();
-
-
 
   return (
     <View style={styles.container}>

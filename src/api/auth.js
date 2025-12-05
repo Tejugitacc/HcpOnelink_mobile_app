@@ -1,6 +1,6 @@
 // app/src/api/auth.js
 import { appianloginURL } from "../constants/apiConstants.js";
-import { authHeader } from '../helpers/apiHeader.js';
+import { authHeader } from '../helpers/authHeader.js';
 
 export async function loginToAppian(username, password) {
   const headers = await authHeader();
