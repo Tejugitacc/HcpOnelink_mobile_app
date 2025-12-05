@@ -1,13 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from "../contexts/AuthContext";
 
 export default function ProfileMenuButton() {
-    const { userName, logout } = useContext(AuthContext);
+    const { logout } = useContext(AuthContext);
+
     const router = useRouter();
     const [modalVisible, setModalVisible] = useState(false);
+    const [userName, setUserName] = useState(null);
 
     const slideAnim = useRef(new Animated.Value(-150)).current;
 
@@ -24,12 +27,16 @@ export default function ProfileMenuButton() {
         router.replace('/');
     };
 
-    console.log("Rendering ProfileMenuButton with username:", userName);
+    const handleModal = async () => {
+        const uname = await AsyncStorage.getItem('username');
+        setUserName(uname);
+        setModalVisible(true)
+    };
 
     return (
         <View style={{ position: 'absolute', top: 40, right: 20, zIndex: 999 }}>
             {/* Icon */}
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <TouchableOpacity onPress={handleModal}>
                 <Ionicons name="person-circle-outline" size={38} color="#2d6cdf" />
             </TouchableOpacity>
 

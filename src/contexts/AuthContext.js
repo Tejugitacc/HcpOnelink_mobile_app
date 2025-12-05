@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }) => {
 
       // save userId
       await AsyncStorage.setItem('userId', String(result.userId));
+      await AsyncStorage.setItem('username', String(result.username));
       setUserId(String(result.userId));
 
     } catch (e) {
@@ -55,7 +56,8 @@ export const AuthProvider = ({ children }) => {
       'cachedProfile',
       'cachedEngagements',
       'cachedInvoices',
-      'cachedExpenses'
+      'cachedExpenses',
+      'username'
     ]);
     setUserId(null);
   };
