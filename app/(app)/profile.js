@@ -1,63 +1,66 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { fetchProfile } from '../../src/api/profileApi';
+import { AuthContext } from '../../src/contexts/AuthContext';
 
 export default function Profile() {
   const router = useRouter();
+  const { userId } = useContext(AuthContext);   // ⬅ Use AuthContext
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.replace("/dashboard");
-    }
+    if (router.canGoBack()) router.back();
+    else router.replace("/(app)/dashboard");
   };
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const loadData = async () => {
-    setLoading(true)
-    const storedUsername = await AsyncStorage.getItem("userToken");
-    const storedUserId = await AsyncStorage.getItem("userId");
+  const getProfile = async () => {
+    try {
+      const res = await fetchProfile(userId); // token removed
+      const profileData = res?.data?.profile?.[0];
 
-    // ⚡ Load cached profile instantly
+      if (profileData) {
+        setProfile(profileData);
+
+        // save cache
+        await AsyncStorage.setItem("cachedProfile", JSON.stringify(profileData));
+        console.log("✔ Profile cached");
+      }
+
+    } catch (err) {
+      console.error("API Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const loadData = async () => {
+    setLoading(true);
+
+    if (!userId) {
+      console.log("❌ No logged-in user");
+      return;
+    }
+
+    // ✔ Load cached profile first
     const cached = await AsyncStorage.getItem("cachedProfile");
     if (cached) {
       setProfile(JSON.parse(cached));
       console.log("⚡ Loaded profile from cache");
     }
 
-    if (storedUsername && storedUserId) {
-      getProfile();
-    } else {
-      console.log("❌ Missing username/userId in AsyncStorage.");
-    }
+    // ✔ Fetch from API
+    getProfile();
   };
 
-  const getProfile = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const userId = await AsyncStorage.getItem('userId');
-      const res = await fetchProfile(token, userId);
-      // res.source, res.data ...
-      const profileData = res?.data?.profile?.[0];
 
-      setProfile(profileData);
-      setLoading(false)
-      // ✔ Store to cache for offline use
-      await AsyncStorage.setItem("cachedProfile", JSON.stringify(profileData));
-      console.log("✔ Profile cached");
-
-    } catch (err) {
-      console.error("API Error:", err);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -66,17 +69,16 @@ export default function Profile() {
       </TouchableOpacity>
 
       <Text style={styles.title}>Profile</Text>
-      {/* <Loader loading={loading} message="Loading..." /> */}
-
 
       {profile ? (
         <View style={styles.card}>
           <View style={styles.updateBtn}>
             <Button
               title="Edit Profile"
-              onPress={() => router.push("/updateProfile")}
+              onPress={() => router.push("/(app)/updateProfile")}
             />
           </View>
+
           <Text style={styles.info}>Name: {profile.hcpFirstName} {profile.hcpLastName}</Text>
           <Text style={styles.info}>Email: {profile.hcpEmail}</Text>
           <Text style={styles.info}>Preferred Email: {profile.hcpPreferredEmail}</Text>

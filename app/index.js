@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FormInput from '../src/components/FormInput';
 import PrimaryButton from '../src/components/PrimaryButton';
 import { AuthContext } from '../src/contexts/AuthContext';
@@ -21,12 +22,14 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
-  console.log("LoginScreen rendered with userName:", userName);
+
   // -----------------------------------------
-  // REDIRECT AFTER LOGIN (using userName now)
+  // REDIRECT AFTER LOGIN 
   // -----------------------------------------
   useEffect(() => {
     if (userId) {
+      const base64 = btoa(`${email}:${password}`);
+      AsyncStorage.setItem('authToken', base64);
       router.replace('/(app)/dashboard');
     }
   }, [userId]);

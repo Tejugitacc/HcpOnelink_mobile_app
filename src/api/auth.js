@@ -3,7 +3,6 @@ import { appianloginURL } from "../constants/apiConstants.js";
 
 
 export async function loginToAppian(username, password) {
-  console.log("loginToAppian called with", username);
 
   if (!username || !password) {
     return { success: false, message: "Missing username or password" };
@@ -22,7 +21,7 @@ export async function loginToAppian(username, password) {
 
 
     const text = await response.text();
-    console.log("RAW Appian Response Body:", text);
+
 
     // Try JSON parse
     try {
