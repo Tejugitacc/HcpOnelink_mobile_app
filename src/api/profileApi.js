@@ -1,31 +1,37 @@
-// app/src/api/auth.js
-import { viewProfileURL } from '../constants/apiConstants.js';
-import { authHeader } from '../constants/apiHeader.js';
+// src/api/profileApi.js
+import { viewProfileURL } from '../constants/apiConstants';
+import { authHeader } from '../constants/apiHeader';
 
 export async function fetchProfile(userId) {
-
-  // https://dsi-hcp-dev.appiancloud.com/suite/webapi/viewHCPProfile?userId=
   const url = viewProfileURL + '?userId=' + userId;
+
+  const headers = await authHeader();
+
   const response = await fetch(url, {
     method: 'GET',
-    headers: await authHeader(),
+    headers,
   });
 
   const text = await response.text();
-  console.log("RAW Appian profile Body:", text);
+
+  console.log("RAW Appian response:", text);
+
   if (response.status === 401) {
-    return { success: false, message: 'Invalid username or password' };
+    return { success: false, message: "Unauthorized" };
   }
 
-  // Try JSON parse
-  try {
-    return text ? JSON.parse(text) : { success: false, message: "Empty response from server" };
-  } catch (e) {
+  // If HTML returned, stop
+  if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
     return {
       success: false,
-      message: e.message || "Failed to parse response",
-      raw: text,
+      message: "Appian returned HTML (authentication failed)",
+      rawHtml: text,
     };
   }
 
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    return { success: false, message: "JSON Parse error", raw: text };
+  }
 }

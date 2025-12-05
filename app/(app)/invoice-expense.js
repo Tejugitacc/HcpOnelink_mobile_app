@@ -24,16 +24,15 @@ export default function InvoiceExpense() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace("/dashboard");
+      router.replace("/(app)/dashboard");
     }
   };
 
 
   const getInvoiceExpenses = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken');
       const userId = await AsyncStorage.getItem('userId');
-      const res = await fetchHcpAllInvoicesExpenses(token, userId);
+      const res = await fetchHcpAllInvoicesExpenses(userId);
       // res.source, res.data ...
       const all = res?.data?.invoicesExpenses ?? [];
 
@@ -56,23 +55,22 @@ export default function InvoiceExpense() {
 
   const loadInvoice = async () => {
     setLoading(true);
-    const storedUsername = await AsyncStorage.getItem("userToken");
     const storedUserId = await AsyncStorage.getItem("userId");
 
     // ⚡ Load cached profile instantly
     const cachedInvoices = await AsyncStorage.getItem("cachedInvoices");
-    const cachedExpenses = await AsyncStorage.getItem("cachedInvoices");
+    const cachedExpenses = await AsyncStorage.getItem("cachedExpenses");
     if (cachedInvoices) {
-      setExpenseList(cachedInvoices ?? []);
+      setInvoiceList(JSON.parse(cachedInvoices) ?? []);
       console.log("⚡ Loaded Invoices from cache");
     }
     if (cachedExpenses) {
-      setExpenseList(cachedExpenses ?? []);
+      setExpenseList(JSON.parse(cachedExpenses) ?? []);
       console.log("⚡ Loaded  Expenses  from cache");
     }
 
 
-    if (storedUsername && storedUserId) {
+    if (storedUserId) {
       try {
         getInvoiceExpenses()
       } catch (err) {
@@ -82,41 +80,41 @@ export default function InvoiceExpense() {
     setLoading(false);
   };
 
-const renderRow = (item) => (
-  <View>
-    {/* Compact Table Row */}
-    <TouchableOpacity onPress={() => toggleExpand(item.invoiceExpenseId)}>
-      <View style={styles.row}>
-        <Text style={[styles.cell, styles.name]}>{item.engagementName}</Text>
-        <Text style={styles.cell}>{item.contractNumber}</Text>
-        <Text style={[styles.cell, styles.link]}>{item.invoiceExpenseId}</Text>
-      </View>
-    </TouchableOpacity>
+  const renderRow = (item) => (
+    <View>
+      {/* Compact Table Row */}
+      <TouchableOpacity onPress={() => toggleExpand(item.invoiceExpenseId)}>
+        <View style={styles.row}>
+          <Text style={[styles.cell, styles.name]}>{item.engagementName}</Text>
+          <Text style={styles.cell}>{item.contractNumber}</Text>
+          <Text style={[styles.cell, styles.link]}>{item.invoiceExpenseId}</Text>
+        </View>
+      </TouchableOpacity>
 
-    {/* Expanded Card */}
-    {expandedId === item.invoiceExpenseId && (
-      <View style={styles.card}>
-        <Text style={styles.label}>Engagement Name:</Text>
-        <Text style={styles.value}>{item.engagementName}</Text>
+      {/* Expanded Card */}
+      {expandedId === item.invoiceExpenseId && (
+        <View style={styles.card}>
+          <Text style={styles.label}>Engagement Name:</Text>
+          <Text style={styles.value}>{item.engagementName}</Text>
 
-        <Text style={styles.label}>Contract Number:</Text>
-        <Text style={styles.value}>{item.contractNumber}</Text>
+          <Text style={styles.label}>Contract Number:</Text>
+          <Text style={styles.value}>{item.contractNumber}</Text>
 
-        <Text style={styles.label}>{item.recordType === "Invoice" ? "Invoice #" : "Expense ID"}:</Text>
-        <Text style={styles.value}>{item.invoiceExpenseId}</Text>
+          <Text style={styles.label}>{item.recordType === "Invoice" ? "Invoice #" : "Expense ID"}:</Text>
+          <Text style={styles.value}>{item.invoiceExpenseId}</Text>
 
-        <Text style={styles.label}>Submission Date:</Text>
-        <Text style={styles.value}>{item.createdOn}</Text>
+          <Text style={styles.label}>Submission Date:</Text>
+          <Text style={styles.value}>{item.createdOn}</Text>
 
-        <Text style={styles.label}>Total Amount:</Text>
-        <Text style={styles.value}>${item.paymentTotal}</Text>
+          <Text style={styles.label}>Total Amount:</Text>
+          <Text style={styles.value}>${item.paymentTotal}</Text>
 
-        <Text style={styles.label}>Status:</Text>
-        <Text style={[styles.value, { fontWeight: "bold" }]}>{item.status}</Text>
-      </View>
-    )}
-  </View>
-);
+          <Text style={styles.label}>Status:</Text>
+          <Text style={[styles.value, { fontWeight: "bold" }]}>{item.status}</Text>
+        </View>
+      )}
+    </View>
+  );
 
 
   const renderTable = (title, data) => (
@@ -163,7 +161,7 @@ const renderRow = (item) => (
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: "#fff" },
+  container: { flex: 1, padding: 15, backgroundColor: "#fff", marginTop: 40 },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },
   title: { fontSize: 24, fontWeight: "bold", marginVertical: 10 },
@@ -204,18 +202,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#d0d7e2",
   },
-  
+
   label: {
     fontSize: 13,
     fontWeight: "bold",
     marginTop: 8,
     color: "#135a9a",
   },
-  
+
   value: {
     fontSize: 13,
     color: "#333",
     marginTop: 2,
   },
-  
+
 });

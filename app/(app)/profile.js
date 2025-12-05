@@ -1,3 +1,4 @@
+// app\(app)\profile.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
@@ -23,7 +24,7 @@ export default function Profile() {
   const getProfile = async () => {
     try {
       const res = await fetchProfile(userId); // token removed
-      const profileData = res?.data?.profile?.[0];
+      const profileData = res?.profile?.[0];
 
       if (profileData) {
         setProfile(profileData);
@@ -95,7 +96,7 @@ export default function Profile() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  container: { flex: 1, padding: 20, backgroundColor: "#fff",marginTop:40 },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
