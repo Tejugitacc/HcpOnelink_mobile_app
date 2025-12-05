@@ -34,7 +34,6 @@ export async function fetchHcpAllEngagements(userId) {
 }
 
 export async function updateHcpProfile(userId, payload) {
-  console.log("in api token,userId,payload", userId, payload)
 
   const url = updateProfileURL + '?userId=' + userId;
   const headers = await authHeader();
@@ -43,7 +42,7 @@ export async function updateHcpProfile(userId, payload) {
     headers,
     body: JSON.stringify(payload)
   });
-
+  // console.log("update profile:", response);
   if (response.status === 401) {
     return { success: false, message: 'Invalid username or password' };
   }
