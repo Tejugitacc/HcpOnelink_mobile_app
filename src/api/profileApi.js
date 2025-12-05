@@ -1,6 +1,6 @@
 // src/api/profileApi.js
 import { viewProfileURL } from '../constants/apiConstants';
-import { authHeader } from '../constants/apiHeader';
+import { authHeader } from '../helpers/apiHeader.js';
 
 export async function fetchProfile(userId) {
   const url = viewProfileURL + '?userId=' + userId;

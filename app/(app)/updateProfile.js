@@ -17,7 +17,7 @@ export default function UpdateProfileScreen() {
         if (router.canGoBack()) {
             router.back();
         } else {
-            router.replace("/dashboard");
+            router.replace("/(app)/dashboard");
         }
     };
 
@@ -55,11 +55,10 @@ export default function UpdateProfileScreen() {
 
     const onSubmit = async (values) => {
         try {
-            const token = await AsyncStorage.getItem('userToken');
-            const response = await updateHcpProfile(token, userId, values);
+            const response = await updateHcpProfile(userId, values);
             if (Platform.OS === "web") {
                 alert(response.data.message)
-                router.replace("/profile");
+                router.replace("/(app)/profile");
             }
             Alert.alert("Success", "Profile updated!", [
                 { text: "OK", onPress: () => router.back() }

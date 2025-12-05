@@ -1,11 +1,11 @@
 // app/src/api/auth.js
-import { getEngagementsURL } from '../constants/apiConstants';
-import { authHeader } from '../constants/apiHeader';
+import { getEngagementsURL, updateProfileURL } from '../constants/apiConstants';
+import { authHeader } from '../helpers/apiHeader.js';
 
 export async function fetchHcpAllEngagements(userId) {
 
   const url = getEngagementsURL + '?userId=' + userId;
-    const headers = await authHeader();
+  const headers = await authHeader();
   const response = await fetch(url, {
     method: 'GET',
     headers,
@@ -33,17 +33,14 @@ export async function fetchHcpAllEngagements(userId) {
   }
 }
 
-export async function updateHcpProfile(token, userId, payload) {
+export async function updateHcpProfile(userId, payload) {
   console.log("in api token,userId,payload", token, userId, payload)
 
-  const url = backendURL + '/api/user/' + userId + '/updateProfile';
-
+  const url = updateProfileURL + '?userId=' + userId;
+  const headers = await authHeader();
   const response = await fetch(url, {
     method: 'PATCH',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify(payload)
   });
 

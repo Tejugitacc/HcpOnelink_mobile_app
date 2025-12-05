@@ -1,6 +1,6 @@
 // src\api\invoiceExpensesAPis.js
 import { invoicesExpensesURL } from '../constants/apiConstants';
-import { authHeader } from '../constants/apiHeader';
+import { authHeader } from '../helpers/apiHeader.js';
 
 export async function fetchHcpAllInvoicesExpenses(userId) {
   const url = invoicesExpensesURL + '?userId=' + userId;

@@ -1,31 +1,25 @@
 // app/src/api/auth.js
 import { appianloginURL } from "../constants/apiConstants.js";
-
+import { authHeader } from '../helpers/apiHeader.js';
 
 export async function loginToAppian(username, password) {
-
+  const headers = await authHeader();
   if (!username || !password) {
     return { success: false, message: "Missing username or password" };
   }
 
   try {
-    const base64 = btoa(`${username}:${password}`);
     const response = await fetch(appianloginURL, {
       method: "POST",
-      headers: {
-        Authorization: `Basic ${base64}`,
-        Accept: "application/json",
-      },
+      headers,
       body: JSON.stringify({ username, password }),
     });
 
-
     const text = await response.text();
-
 
     // Try JSON parse
     try {
-      return  text ? JSON.parse(text) : { success: false, message: "Empty response from server" };
+      return text ? JSON.parse(text) : { success: false, message: "Empty response from server" };
     } catch (e) {
       return {
         success: false,
