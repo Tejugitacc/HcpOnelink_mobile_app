@@ -1,1 +1,5 @@
-export const WEBAPI_Key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzZDMwY2FkOC02OWE4LTlmMjMtOWYyMi1iNGQ5ZTVmZWE5NTgifQ.nu_V1S2le8GiwgMV1GteL7PMSgsRiEDyxVqUSLaz7WE";
+import Constants from 'expo-constants';
+
+export const WEBAPI_Key = Constants.expoConfig.extra.WEB_API_KEY;
+
+

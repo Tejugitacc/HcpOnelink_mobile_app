@@ -1,9 +1,11 @@
-import { WEBAPI_Key as API_KEY } from "../constants/webApiKey.js";
+import { WEBAPI_Key } from "../constants/webApiKey.js";
 
 export async function authHeader() {
+  console.log("WEBAPI_Key used in authHeader:", WEBAPI_Key);
 
+   console.log("RAW VALUE:", JSON.stringify(WEBAPI_Key));
   return {
-    "Appian-API-Key": API_KEY,
+    "Appian-API-Key": WEBAPI_Key,
     "Accept": "application/json",
     "Content-Type": "application/json",
   };

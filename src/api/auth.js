@@ -7,7 +7,8 @@ export async function loginToAppian(username, password) {
   if (!username || !password) {
     return { success: false, message: "Missing username or password" };
   }
-
+console.log("Logging in to Appian with username:", username,password);
+console.log("headers:",headers);
   try {
     const response = await fetch(appianloginURL, {
       method: "POST",
