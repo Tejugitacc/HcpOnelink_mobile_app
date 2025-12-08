@@ -116,16 +116,16 @@ export default function Engagements() {
       </View>
 
       {/* List */}
-      {items ? (<>
+      {items.length === 0 ? (<>
+        <View style={styles.noItemsContainer}>
+          <Text>No Engagements available</Text>
+        </View>
+      </>) : (
         <FlatList
           data={items}
           renderItem={renderItem}
           keyExtractor={(item) => item.pkId}
         />
-      </>) : (
-        <View style={styles.noItemsContainer}>
-          <Text>No Engagements available</Text>
-        </View>
       )}
 
     </View>
@@ -134,7 +134,10 @@ export default function Engagements() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 10, backgroundColor: "#fff", marginTop: 50 },
-  noItemsContainer: { padding: 20, margin: 10, alignItems: "center", border: "2px solid beige" },
+  noItemsContainer: {
+    padding: 20, margin: 10, alignItems: "center",
+    borderWidth: 2, borderColor: "beige", boxShadow: "2px 2px 5px rgba(0,0,0,0.1)"
+  },
   backBtn: { marginBottom: 10 },
   backText: { fontSize: 18, color: "#2d6cdf" },
   title: {

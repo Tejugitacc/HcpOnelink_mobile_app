@@ -34,7 +34,7 @@ export default function ProfileMenuButton() {
     };
 
     return (
-        <View style={{ position: 'absolute', top: 40, right: 20, zIndex: 999 }}>
+        <View style={{ position: 'absolute', top: 55, right: 20, zIndex: 999 }}>
             {/* Icon */}
             <TouchableOpacity onPress={handleModal}>
                 <Ionicons name="person-circle-outline" size={38} color="#2d6cdf" />

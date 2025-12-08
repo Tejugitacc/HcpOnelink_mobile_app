@@ -57,7 +57,7 @@ export default function LoginScreen() {
       <View style={styles.card}>
         <Image
           style={styles.tinyLogo}
-          source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+          source={require('../assets/images/favicon.png')}
         />
 
         <FormInput
@@ -74,6 +74,7 @@ export default function LoginScreen() {
           placeholder="Password"
           secureTextEntry
           error={errors.password}
+          
         />
 
         <PrimaryButton
@@ -105,5 +106,5 @@ const styles = StyleSheet.create({
   },
   helpRow: { marginTop: 12, alignItems: 'center' },
   helpText: { color: '#444', fontSize: 13 },
-  tinyLogo: { width: 50, height: 50 }
+  tinyLogo: { width: 50, height: 50 ,paddingBottom: 20,marginBottom: 20, alignSelf: "flex-start"  }
 });
