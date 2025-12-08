@@ -1,41 +1,39 @@
-// app/src/api/auth.js
 import { appianloginURL } from "../constants/apiConstants.js";
-import { authHeader } from '../helpers/authHeader.js';
+import { WEBAPI_Key } from "../constants/webApiKey.js";
 
 export async function loginToAppian(username, password) {
-  const headers = await authHeader();
   if (!username || !password) {
     return { success: false, message: "Missing username or password" };
   }
 
+  // Basic auth header
+  const basicAuth = "Basic " + btoa(`${username}:${password}`);
+
   try {
     const response = await fetch(appianloginURL, {
       method: "POST",
-      headers,
-      body: JSON.stringify({ username, password }),
+      headers: {
+        "Appian-API-Key": WEBAPI_Key,
+        "Authorization": basicAuth,
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
     });
 
     const text = await response.text();
 
-    // Try JSON parse
     try {
       return text ? JSON.parse(text) : { success: false, message: "Empty response from server" };
     } catch (e) {
       return {
         success: false,
-        message: "Appian returned HTML, not JSON (likely login page or redirect)",
+        message: "Failed to parse JSON",
         raw: text,
       };
     }
 
   } catch (err) {
-    console.log("Axios Login Error:", err?.response?.data || err.message);
-
-    if (err.response && err.response.data) {
-      return err.response.data;
-    }
-
-    return { success: false, message: "Login failed. Check network/Appian." };
+    return { success: false, message: err.message || "Network error" };
   }
 }
-
