@@ -1,5 +1,4 @@
 import { appianloginURL } from "../constants/apiConstants.js";
-import { WEBAPI_Key } from "../constants/webApiKey.js";
 
 export async function loginToAppian(username, password) {
   if (!username || !password) {
@@ -13,7 +12,7 @@ export async function loginToAppian(username, password) {
     const response = await fetch(appianloginURL, {
       method: "POST",
       headers: {
-        "Appian-API-Key": WEBAPI_Key,
+        // "Appian-API-Key": WEBAPI_Key,
         "Authorization": basicAuth,
         "Accept": "application/json",
         "Content-Type": "application/json",
