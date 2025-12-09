@@ -40,6 +40,12 @@ export const AuthProvider = ({ children }) => {
       // save userId
       await AsyncStorage.setItem('userId', String(result.userId));
       await AsyncStorage.setItem('username', String(result.username));
+      const fullName = [result.firstname, result.lastname]
+        .filter(Boolean)      // removes null/undefined/empty
+        .join(" ");
+
+      await AsyncStorage.setItem("fullname", fullName);
+
       setUserId(String(result.userId));
 
     } catch (e) {
@@ -57,7 +63,8 @@ export const AuthProvider = ({ children }) => {
       'cachedEngagements',
       'cachedInvoices',
       'cachedExpenses',
-      'username'
+      'username',
+      'fullname'
     ]);
     setUserId(null);
   };

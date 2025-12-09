@@ -11,6 +11,7 @@ export default function ProfileMenuButton() {
     const router = useRouter();
     const [modalVisible, setModalVisible] = useState(false);
     const [userName, setUserName] = useState(null);
+    const [userFullName, setUserFullName] = useState(null);
 
     const slideAnim = useRef(new Animated.Value(-150)).current;
 
@@ -30,6 +31,7 @@ export default function ProfileMenuButton() {
     const handleModal = async () => {
         const uname = await AsyncStorage.getItem('username');
         setUserName(uname);
+        setUserFullName(await AsyncStorage.getItem('fullname'));
         setModalVisible(true)
     };
 
@@ -45,6 +47,7 @@ export default function ProfileMenuButton() {
                 <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
                     <Animated.View style={[styles.dropdown, { transform: [{ translateY: slideAnim }] }]}>
                         <Text style={styles.username}>{userName}</Text>
+                        <Text style={{ marginBottom: 16, fontSize: 16, color: '#555' }}>{userFullName}</Text>
 
                         {/* Logout */}
                         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>

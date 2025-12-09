@@ -131,7 +131,7 @@ export default function UpdateProfileScreen() {
 }
 
 const styles = {
-    container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+    container: { flex: 1, padding: 20, backgroundColor: "#fff" ,paddingTop: 40},
     formContainer: {
         padding: 10, margin: 10, borderWidth: 1,
         borderColor: "#ccc",
