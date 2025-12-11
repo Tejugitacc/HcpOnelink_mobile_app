@@ -27,6 +27,11 @@ export default function Dashboard() {
         <Text style={styles.btnText}>View Invoice & Expense</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/(app)/utilities')}>
+        <Text style={styles.btnText}>Utilities</Text>
+      </TouchableOpacity>
+
+
     </View>
   );
 }
