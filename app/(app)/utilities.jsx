@@ -1,10 +1,9 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
-import * as Crypto from "expo-crypto";
 import { useFonts } from "expo-font";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-
+import { decryptData, encryptData } from "../../src/helpers/encryptionUtils";
 
 export default function Utilities() {
   const [photo, setPhoto] = useState(null);
@@ -14,6 +13,12 @@ export default function Utilities() {
   const [bankNumber, setBankNumber] = useState("");
   const [encrypted, setEncrypted] = useState("");
   const [signName, setSignName] = useState("");
+  const [capturedSignature, setCapturedSignature] = useState("");
+  const [dateMode, setDateMode] = useState("single"); // "single" | "range"
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [activePicker, setActivePicker] = useState(null); // "single" | "from" | "to"
+
 
 
   const [fontsLoaded] = useFonts({
@@ -46,16 +51,25 @@ export default function Utilities() {
   // 📅 4. Date Picker
   const onChangeDate = (event, selectedDate) => {
     setShowPicker(false);
-    if (selectedDate) setDate(selectedDate);
+    if (!selectedDate) return;
+
+    if (activePicker === "single") setDate(selectedDate);
+    if (activePicker === "from") setFromDate(selectedDate);
+    if (activePicker === "to") setToDate(selectedDate);
   };
 
+
   // 🔐 5. Encrypt Banking Details
-  const encryptBank = async () => {
-    const hash = await Crypto.digestStringAsync(
-      Crypto.CryptoDigestAlgorithm.SHA256,
-      bankNumber
-    );
-    setEncrypted(hash);
+  const encryptBank = () => {
+    if (!bankNumber) return;
+
+    const encryptedValue = encryptData(bankNumber);
+    setEncrypted(encryptedValue);
+  };
+
+  const decryptBank = () => {
+    const decryptedValue = decryptData(encrypted);
+    console.log("Decrypted bank number:", decryptedValue);
   };
 
   return (
@@ -78,27 +92,110 @@ export default function Utilities() {
       {/* SIGNATURE BY NAME */}
       <Text style={styles.section}>Signature</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Enter full name"
-        value={signName}
-        onChangeText={setSignName}
-      />
+      {!capturedSignature && (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter full name"
+            value={signName}
+            onChangeText={setSignName}
+          />
 
-      {signName ? (
+          <TouchableOpacity
+            style={[styles.btn, { backgroundColor: "#2e7d32" }]}
+            onPress={() => setCapturedSignature(signName)}
+            disabled={!signName}
+          >
+            <Text style={styles.btnText}>✍ Capture Signature</Text>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {capturedSignature && (
         <View style={styles.signatureBox}>
-          <Text style={styles.signatureText}>{signName}</Text>
+          <Text style={styles.signatureText}>{capturedSignature}</Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              setCapturedSignature("");
+              setSignName("");
+            }}
+          >
+            <Text style={styles.resetText}>Clear Signature</Text>
+          </TouchableOpacity>
         </View>
-      ) : null}
+      )}
+
 
       {/* DATE PICKER */}
-      <TouchableOpacity style={styles.btn} onPress={() => setShowPicker(true)}>
-        <Text style={styles.btnText}>📅 Select Date</Text>
-      </TouchableOpacity>
-      <Text style={styles.dateText}>{date.toDateString()}</Text>
-      {showPicker && (
-        <DateTimePicker value={date} mode="date" onChange={onChangeDate} />
+      <Text style={styles.section}>Date Selection</Text>
+
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={[styles.btnSmall, dateMode === "single" && styles.activeBtn]}
+          onPress={() => setDateMode("single")}
+        >
+          <Text style={styles.btnText}>Single</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.btnSmall, dateMode === "range" && styles.activeBtn]}
+          onPress={() => setDateMode("range")}
+        >
+          <Text style={styles.btnText}>Range</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* SINGLE DATE */}
+      {dateMode === "single" && (
+        <>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              setActivePicker("single");
+              setShowPicker(true);
+            }}
+          >
+            <Text style={styles.btnText}>📅 Select Date</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.dateText}>{date.toDateString()}</Text>
+        </>
       )}
+
+      {/* RANGE DATE */}
+      {dateMode === "range" && (
+        <>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              setActivePicker("from");
+              setShowPicker(true);
+            }}
+          >
+            <Text style={styles.btnText}>
+              From: {fromDate ? fromDate.toDateString() : "Select"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => {
+              setActivePicker("to");
+              setShowPicker(true);
+            }}
+          >
+            <Text style={styles.btnText}>
+              To: {toDate ? toDate.toDateString() : "Select"}
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
+
+      {showPicker && (
+        <DateTimePicker value={new Date()} mode="date" onChange={onChangeDate} />
+      )}
+
 
       {/* ENCRYPT DATA */}
       <TextInput
@@ -153,5 +250,27 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: "#000",
   },
+  row: {
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 10,
+  },
+  btnSmall: {
+    flex: 1,
+    backgroundColor: "#bbb",
+    padding: 10,
+    borderRadius: 6,
+    alignItems: "center",
+  },
+  activeBtn: {
+    backgroundColor: "#1d6dce",
+  },
+  resetText: {
+    color: "#d32f2f",
+    marginTop: 10,
+    textAlign: "center",
+    fontWeight: "600",
+  },
+
 
 });
