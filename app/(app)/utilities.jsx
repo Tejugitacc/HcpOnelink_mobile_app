@@ -62,7 +62,7 @@ export default function Utilities() {
   // 🔐 5. Encrypt Banking Details
   const encryptBank = () => {
     if (!bankNumber) return;
-
+  console.log("Bank number to encrypt:", bankNumber);
     const encryptedValue = encryptData(bankNumber);
     setEncrypted(encryptedValue);
   };
