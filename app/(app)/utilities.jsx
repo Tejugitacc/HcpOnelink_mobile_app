@@ -4,12 +4,11 @@ import { useFonts } from "expo-font";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Signature from "react-native-signature-canvas";
+
 
 export default function Utilities() {
   const [photo, setPhoto] = useState(null);
   const [file, setFile] = useState(null);
-  const [signature, setSignature] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
   const [date, setDate] = useState(new Date());
   const [bankNumber, setBankNumber] = useState("");
@@ -43,8 +42,6 @@ export default function Utilities() {
     if (!res.canceled) setFile(res.assets[0]);
   };
 
-  // ✍ 3. Signature Capture
-  const handleSignature = (sig) => setSignature(sig);
 
   // 📅 4. Date Picker
   const onChangeDate = (event, selectedDate) => {
@@ -76,15 +73,6 @@ export default function Utilities() {
         <Text style={styles.btnText}>📁 Upload File</Text>
       </TouchableOpacity>
       {file && <Text style={styles.fileText}>Selected: {file.fileName || "File"}</Text>}
-
-      {/* SIGNATURE CANVAS*/}
-      <Text style={styles.section}>Signature</Text>
-      <Signature
-        onOK={handleSignature}
-        descriptionText="Sign above"
-        backgroundColor="#f8f8f8"
-      />
-      {signature && <Text style={styles.success}>✔ Signature captured</Text>}
 
 
       {/* SIGNATURE BY NAME */}
