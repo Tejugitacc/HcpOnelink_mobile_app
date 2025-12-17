@@ -17,7 +17,7 @@ export default function FormInput({ label, error, secureTextEntry, ...props }) {
           {...props}
         />
 
-        {/* 👁 Eye Icon only if secureTextEntry is true */}
+        {/* Eye Icon only if secureTextEntry is true */}
         {secureTextEntry && (
           <TouchableOpacity onPress={() => setHide(!hide)} style={styles.iconArea}>
             <Ionicons

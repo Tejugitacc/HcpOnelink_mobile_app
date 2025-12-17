@@ -12,6 +12,7 @@ export default function Utilities() {
   const [date, setDate] = useState(new Date());
   const [bankNumber, setBankNumber] = useState("");
   const [encrypted, setEncrypted] = useState("");
+  const [decrypted, setDecrypted] = useState('');
   const [signName, setSignName] = useState("");
   const [capturedSignature, setCapturedSignature] = useState("");
   const [dateMode, setDateMode] = useState("single"); // "single" | "range"
@@ -27,7 +28,7 @@ export default function Utilities() {
 
   if (!fontsLoaded) return null;
 
-  // 📸 1. Capture Image using Camera
+  //  1. Capture Image using Camera
   const openCamera = async () => {
     const res = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -37,7 +38,7 @@ export default function Utilities() {
     if (!res.canceled) setPhoto(res.assets[0].uri);
   };
 
-  // 📁 2. Upload File
+  //  2. Upload File
   const pickFile = async () => {
     const res = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -48,7 +49,7 @@ export default function Utilities() {
   };
 
 
-  // 📅 4. Date Picker
+  //  4. Date Picker
   const onChangeDate = (event, selectedDate) => {
     setShowPicker(false);
     if (!selectedDate) return;
@@ -59,17 +60,17 @@ export default function Utilities() {
   };
 
 
-  // 🔐 5. Encrypt Banking Details
+  //  5. Encrypt Banking Details
   const encryptBank = () => {
     if (!bankNumber) return;
-  console.log("Bank number to encrypt:", bankNumber);
+    console.log("Bank number to encrypt:", bankNumber);
     const encryptedValue = encryptData(bankNumber);
     setEncrypted(encryptedValue);
   };
 
-  const decryptBank = () => {
-    const decryptedValue = decryptData(encrypted);
-    console.log("Decrypted bank number:", decryptedValue);
+  const handleDecrypt = () => {
+    const plain = decryptData(encrypted);
+    setDecrypted(plain);
   };
 
   return (
@@ -209,6 +210,11 @@ export default function Utilities() {
         <Text style={styles.btnText}>🔐 Encrypt Bank Details</Text>
       </TouchableOpacity>
       {encrypted ? <Text style={styles.hash}>{encrypted}</Text> : null}
+
+      <TouchableOpacity style={styles.btn} onPress={handleDecrypt}>
+        <Text style={styles.btnText}>Decrypt</Text>
+      </TouchableOpacity>
+      {decrypted ? <Text>Decrypted: {decrypted}</Text> : null}
     </View>
   );
 }

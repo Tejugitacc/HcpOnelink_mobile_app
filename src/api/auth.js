@@ -12,7 +12,6 @@ export async function loginToAppian(username, password) {
     const response = await fetch(appianloginURL, {
       method: "POST",
       headers: {
-        // "Appian-API-Key": WEBAPI_Key,
         "Authorization": basicAuth,
         "Accept": "application/json",
         "Content-Type": "application/json",

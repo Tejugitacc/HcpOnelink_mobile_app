@@ -1,4 +1,3 @@
-import React from "react";
 import { ActivityIndicator, Modal, StyleSheet, Text, View } from "react-native";
 
 export default function Loader({ loading, message }) {

@@ -41,7 +41,7 @@ export default function InvoiceExpense() {
       const expenses = all.filter(item => item.recordType === "Expense");
 
 
-      // ✔ Store to cache for offline use
+      // Store to cache for offline use
       await AsyncStorage.setItem("cachedInvoices", JSON.stringify(invoices));
       await AsyncStorage.setItem("cachedExpenses", JSON.stringify(expenses));
       console.log("✔ Invoices and expenses cached");
@@ -58,7 +58,7 @@ export default function InvoiceExpense() {
     setLoading(true);
     const storedUserId = await AsyncStorage.getItem("userId");
 
-    // ⚡ Load cached profile instantly
+    // Load cached profile instantly
     const cachedInvoices = await AsyncStorage.getItem("cachedInvoices");
     const cachedExpenses = await AsyncStorage.getItem("cachedExpenses");
     if (cachedInvoices) {

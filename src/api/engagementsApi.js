@@ -1,4 +1,4 @@
-// app/src/api/auth.js
+// app/src/api/engagementsApi.js
 import { getEngagementsURL, updateProfileURL } from '../constants/apiConstants';
 import { authHeader } from '../helpers/authHeader';
 

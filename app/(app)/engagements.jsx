@@ -45,7 +45,7 @@ export default function Engagements() {
 
     const storedUserId = await AsyncStorage.getItem("userId");
 
-    // ⚡ Load cached profile instantly
+    // Load cached profile instantly
     const cached = await AsyncStorage.getItem("cachedEngagements");
     if (cached) {
       setItems(cached?.data?.engagements ?? []);

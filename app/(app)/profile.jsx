@@ -8,7 +8,7 @@ import { AuthContext } from '../../src/contexts/AuthContext';
 
 export default function Profile() {
   const router = useRouter();
-  const { userId } = useContext(AuthContext);   // ⬅ Use AuthContext
+  const { userId } = useContext(AuthContext);   // Use AuthContext
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
 
