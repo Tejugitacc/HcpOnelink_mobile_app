@@ -12,59 +12,44 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const restore = async () => {
-      try {
-        const savedId = await AsyncStorage.getItem('userId');
-        if (savedId) {
-          setUserId(savedId);
-        }
-      } catch (e) {
-        console.log('restore error', e);
-      } finally {
-        setInitializing(false);
-      }
+      const savedId = await AsyncStorage.getItem('userId');
+      if (savedId) setUserId(savedId);
+      setInitializing(false);
     };
     restore();
   }, []);
 
   const login = async (username, password) => {
     setLoading(true);
-    try {
-      const result = await loginToAppian(username, password);
-      console.log("Login response:", result);
 
-      if (!result.success || !result.userId) {
-        alert("Invalid credentials");
-        return;
-      }
+    const result = await loginToAppian(username, password);
+    // console.log("Login response:", result);
 
-      // save userId
-      await AsyncStorage.setItem('userId', String(result.userId));
-      await AsyncStorage.setItem('username', String(result.username));
-      const fullName = [result.firstname, result.lastname]
-        .filter(Boolean)      // removes null/undefined/empty
-        .join(" ");
-
-      await AsyncStorage.setItem("fullname", fullName);
-
-      setUserId(String(result.userId));
-
-    } catch (e) {
-      console.log("login error:", e);
-      alert("Something went wrong");
-    } finally {
+    if (!result.success) {
+      alert("Invalid credentials");
       setLoading(false);
+      return;
     }
+
+    // await AsyncStorage.multiSet([
+    //   ['userId', String(result.userId)],
+    //   ['username', result.username || ""],
+    //   ['fullname', [result.firstname, result.lastname].filter(Boolean).join(" ")],
+    // ]);
+
+    // setUserId(String(result.userId));
+    setLoading(false);
   };
 
   const logout = async () => {
     await AsyncStorage.multiRemove([
       'userId',
+      'username',
+      'fullname',
       'cachedProfile',
       'cachedEngagements',
       'cachedInvoices',
-      'cachedExpenses',
-      'username',
-      'fullname'
+      'cachedExpenses'
     ]);
     setUserId(null);
   };
