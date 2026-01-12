@@ -6,7 +6,7 @@ export async function fetchProfile(userId) {
   const url = viewProfileURL + '?userId=' + userId;
 
   const headers = await authHeader();
-  console.log("Fetching profile with headers:", headers);
+    console.log("OAuth headers:", headers);
   const response = await fetch(url, {
     method: 'GET',
     headers,
