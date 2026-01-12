@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
 
     const result = await loginToAppian(username, password);
-    // console.log("Login response:", result);
+    console.log("Login response:", result);
 
     if (!result.success) {
       alert("Invalid credentials");
@@ -31,13 +31,13 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
-    // await AsyncStorage.multiSet([
-    //   ['userId', String(result.userId)],
-    //   ['username', result.username || ""],
-    //   ['fullname', [result.firstname, result.lastname].filter(Boolean).join(" ")],
-    // ]);
+    await AsyncStorage.multiSet([
+      ['userId', String(result.userId)],
+      ['username', result.username || ""],
+      ['fullname', [result.firstname, result.lastname].filter(Boolean).join(" ")],
+    ]);
 
-    // setUserId(String(result.userId));
+    setUserId(String(result.userId));
     setLoading(false);
   };
 
