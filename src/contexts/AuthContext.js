@@ -7,8 +7,10 @@ import React, { createContext, useEffect, useState } from 'react';
 export const AuthContext = createContext();
 
 const discovery = {
-  authorizationEndpoint: 'https://dsi-hcp-dev.appiancloud.com/suite/authorization/oauth/token',
-  tokenEndpoint: 'https://dsi-hcp-dev.appiancloud.com/suite/authorization/oauth/token',
+  authorizationEndpoint:
+    'https://dsi-hcp-dev.appiancloud.com/suite/oauth/authorize',
+  tokenEndpoint:
+    'https://dsi-hcp-dev.appiancloud.com/suite/oauth/token',
 };
 
 export const AuthProvider = ({ children }) => {
