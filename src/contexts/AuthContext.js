@@ -29,43 +29,80 @@ export const AuthProvider = ({ children }) => {
     restore();
   }, []);
 
+  // const login = async () => {
+  //   const redirectUri = AuthSession.makeRedirectUri({ scheme: 'hcpone' });
+
+  //   const request = new AuthSession.AuthRequest({
+  //     clientId: '_G-nxucYngOrMdF6lOXdIs7l8JIESuOnYAK0DrjMY_Q',
+  //     scopes: ['openid', 'profile'],
+  //     redirectUri,
+  //     usePKCE: true,
+  //     responseType: AuthSession.ResponseType.Code,
+  //   });
+
+  //   await request.makeAuthUrlAsync(discovery);
+
+  //   const result = await request.promptAsync(discovery);
+
+  //   if (result.type !== 'success') return;
+
+  //   const tokenResponse = await AuthSession.exchangeCodeAsync(
+  //     {
+  //       clientId: '_G-nxucYngOrMdF6lOXdIs7l8JIESuOnYAK0DrjMY_Q',
+  //       code: result.params.code,
+  //       redirectUri,
+  //       extraParams: {
+  //         code_verifier: request.codeVerifier,
+  //       },
+  //     },
+  //     discovery
+  //   );
+
+  //   await AsyncStorage.multiSet([
+  //     ['accessToken', tokenResponse.accessToken],
+  //     ['refreshToken', tokenResponse.refreshToken],
+  //   ]);
+
+  //   setAccessToken(tokenResponse.accessToken);
+  //   setRefreshToken(tokenResponse.refreshToken);
+  // };
+
   const login = async () => {
-    const redirectUri = AuthSession.makeRedirectUri({ scheme: 'hcpone' });
+  const redirectUri = AuthSession.makeRedirectUri({
+    useProxy: true,
+  });
+ console.log("OAuth Redirect URI:", redirectUri); 
+  const request = new AuthSession.AuthRequest({
+    clientId: '_G-nxucYngOrMdF6lOXdIs7l8JIESuOnYAK0DrjMY_Q',
+    scopes: ['openid', 'profile'],
+    redirectUri,
+    responseType: AuthSession.ResponseType.Code,
+    usePKCE: true,
+  });
 
-    const request = new AuthSession.AuthRequest({
+  const result = await request.promptAsync(discovery, {
+    useProxy: true,
+  });
+
+  if (result.type !== 'success') {
+    return;
+  }
+
+  const tokenResponse = await AuthSession.exchangeCodeAsync(
+    {
       clientId: '_G-nxucYngOrMdF6lOXdIs7l8JIESuOnYAK0DrjMY_Q',
-      scopes: ['openid', 'profile'],
+      code: result.params.code,
       redirectUri,
-      usePKCE: true,
-      responseType: AuthSession.ResponseType.Code,
-    });
-
-    await request.makeAuthUrlAsync(discovery);
-
-    const result = await request.promptAsync(discovery);
-
-    if (result.type !== 'success') return;
-
-    const tokenResponse = await AuthSession.exchangeCodeAsync(
-      {
-        clientId: '_G-nxucYngOrMdF6lOXdIs7l8JIESuOnYAK0DrjMY_Q',
-        code: result.params.code,
-        redirectUri,
-        extraParams: {
-          code_verifier: request.codeVerifier,
-        },
+      extraParams: {
+        code_verifier: request.codeVerifier,
       },
-      discovery
-    );
+    },
+    discovery
+  );
 
-    await AsyncStorage.multiSet([
-      ['accessToken', tokenResponse.accessToken],
-      ['refreshToken', tokenResponse.refreshToken],
-    ]);
+  setAccessToken(tokenResponse.accessToken);
+};
 
-    setAccessToken(tokenResponse.accessToken);
-    setRefreshToken(tokenResponse.refreshToken);
-  };
 
   const logout = async () => {
     await AsyncStorage.clear();
